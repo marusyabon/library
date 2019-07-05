@@ -1,10 +1,16 @@
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const passportJWT = require('passport-jwt');
-const JWTStrategy = passportJWT.Strategy;
-const bcrypt = require('bcrypt');
+import passport from'passport';
+import Local from 'passport-local';
+import JWT from 'passport-jwt';
+// import bcrypt from 'bcrypt';
+import {db} from '../app';
+const dbase = db
 
-const UserModel = require('../models/users');
+const LocalStrategy = Local.Strategy;
+const JWTStrategy = JWT.Strategy;
+
+dbase('users').where('email', 'ann@gmail.com').then(userDocument => {
+	console.log('userDocument', userDocument);
+});
 
 const cookieExtractor = (req) => {
 	let token = null;
@@ -24,29 +30,36 @@ opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = "your_jwt_secret";
 
 passport.use('local', new LocalStrategy({
-	usernameField: 'username',
+	usernameField: 'email',
 	passwordField: 'password',
-}, async (username, password, done) => {
+}, (email, password, done) => {
 	try {
-		const userDocument = await UserModel.findOne({ username: username });
-
-		bcrypt.compare(password, userDocument.passwordHash, (err, isMatch) => {
-			if (isMatch) {
+		db('users').where('email', email).then(userDocument => {
+			console.log('userDocument', userDocument);
+			console.log('username', email);
+			if(password == userDocument.password) {
 				return done(null, userDocument);
-			} else {
+			}
+			else {
 				return done('Incorrect Username / Password');
 			}
-		});		
+			/*bcrypt.compare(password, userDocument.passwordHash, (err, isMatch) => {
+				if (isMatch) {
+					return done(null, userDocument);
+				} else {
+					return done('Incorrect Username / Password');
+				}
+			});	*/
+		});			
 	} catch (error) {
 		done(error);
 	}
 }));
 
 passport.use('jwt', new JWTStrategy(opts, (jwtPayload, done) => {
-
 	if (Date.now() > jwtPayload.expires) {
 		return done('jwt expired');
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       	}
+	}
 
 	return done(null, jwtPayload);
 }

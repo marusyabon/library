@@ -5,9 +5,12 @@ import logger from 'morgan';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
+import {router as checkRouter} from './routes/check';
+import loginRouter from './routes/login';
+import './config/passport';
+import knex from 'knex';
 
 const app = express();
-import knex from 'knex';
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,9 +30,18 @@ const db = knex({
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/check', checkRouter);
+app.use('/login', loginRouter);
 
 app.use(function (err, req, res, next) {
-	res.status(500).send(err.stack);
+	if (!err.statusCode) err.statusCode = 500;
+
+	if (err.shouldRedirect) {
+		console.log(err);
+	} else {
+		console.log(err);
+		// res.status(err.statusCode).send(err.message);
+	}
 });
 
-export default app;
+export {db, app};

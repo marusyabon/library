@@ -3,13 +3,14 @@ import { Router } from 'express';
 const router = Router();
 
 function auth(req, res, next) {
-	passport.authenticate('jwt', { session: false }, (err, user) => {
+	passport.authenticate('jwt', { session: false }, (err, userPayload) => {
 		if (err) {
-			next(new Error(err));
+			err = new Error(err);
+			err.status = 404;
+			return next(err);
 		}
 		req.userPayload = userPayload;
-
-		next();
+		return next();
 	})(req, res);
 }
 
@@ -17,5 +18,4 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res, nex
 	res.send();
 });
 
-// export {auth, router};
-export default router;
+export {auth, router};
