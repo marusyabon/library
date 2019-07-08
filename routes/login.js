@@ -10,13 +10,19 @@ router.post('/', (req, res, next) => {
 		{ session: false },
 		(error, user) => {
 			if (error || !user) {
-				console.log('user', user);
 				return res.status(400).json({ error:error });
 			}
 
 			/** This is what ends up in our JWT */
 			const payload = {
-				username: user.username,
+				firstname: user.user_name,
+				lastname: user.user_surname,
+				role: user.role_name,
+				passport_id: user.passport_ID,
+				birth_date: user.birth_date,
+				address: user.address,
+				phone_number: user.phone_number,
+				email: user.email,
 				expires: Date.now() + 10800000,
 			};
 

@@ -3,6 +3,7 @@ import Local from 'passport-local';
 import JWT from 'passport-jwt';
 // import bcrypt from 'bcrypt';
 import connection from '../db';
+import mysql from 'mysql2';
 
 const LocalStrategy = Local.Strategy;
 const JWTStrategy = JWT.Strategy;
@@ -27,16 +28,17 @@ opts.secretOrKey = "your_jwt_secret";
 passport.use('local', new LocalStrategy({
 	usernameField: 'username',
 	passwordField: 'password',
-}, (email, password, done) => {
+}, (username, password, done) => {
 	try {		
+		const query = mysql.format('SELECT * FROM `users` INNER JOIN `capabilities` ON (users.`capabilities_id` = capabilities.`capabilitie_id`) WHERE `email` = ?', [username]);
+		
 		connection.query(
-			'SELECT * FROM `users` WHERE `email` = email',
+			query,
 			function (err, results, fields) {
-				const user_password = results[0].user_password;
-				console.log(fields);
+				const user_password = results[0].account_password;
 
 				if(password == user_password) {
-					return done(null, results);
+					return done(null, results[0]);
 					/*bcrypt.compare(password, userDocument.passwordHash, (err, isMatch) => {
 						if (isMatch) {
 							return done(null, userDocument);

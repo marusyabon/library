@@ -43,7 +43,7 @@ export default class RegisterPage extends JetView{
 
 			authorization.register(values).then((response) => {
 				if (response) {
-					this.show('/home/main');
+					this.show('/reader/index/main');
 				}
 			});
 		});

@@ -8,6 +8,7 @@ import indexRouter from './routes/index';
 import usersRouter from './routes/users';
 import {router as checkRouter} from './routes/check';
 import loginRouter from './routes/login';
+import logoutRouter from './routes/logout';
 import './config/passport';
 
 const app = express();
@@ -23,6 +24,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/check', checkRouter);
 app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 
 app.use(function (err, req, res, next) {
 	if (!err.statusCode) err.statusCode = 500;

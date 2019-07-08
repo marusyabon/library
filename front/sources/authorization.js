@@ -12,6 +12,6 @@ export default class Authorization {
 	}
 
 	logout() {
-		return webix.ajax().get(logoutUrl)
+		return webix.ajax().get(logoutUrl);
 	}
 }

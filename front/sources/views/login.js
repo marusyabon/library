@@ -9,7 +9,7 @@ export default class IndexPage extends JetView{
 			localId: 'loginForm',
 			width: 300,
 			elements: [
-				{ view: 'text', label: 'Username', name: 'email' },
+				{ view: 'text', label: 'Username', name: 'username' },
 				{ view: 'text', type: 'password', label: 'Password', name: 'password' },
 				{
 					margin: 5, cols: [
@@ -51,7 +51,7 @@ export default class IndexPage extends JetView{
 
 			authorization.login(values).then((response) => {	
 				if (response) {
-					this.show('/home/main');
+					this.show('reader.index/reader.main');
 				}
 				else {
 					webix.message(response);
