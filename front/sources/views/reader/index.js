@@ -50,8 +50,10 @@ export default class TopView extends JetView{
 
 		this.$$('logoutBtn').attachEvent('onItemClick', () => {
 			const app = this.app;
+			const format = webix.Date.dateToStr("%Y-%m-%d");
+			const currentDate = format(new Date());
 			
-			authorization.logout().then((response) => {
+			authorization.logout({currentDate}).then((response) => {
 				if(response) {
 					app.show('/login');
 				}

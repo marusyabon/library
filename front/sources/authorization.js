@@ -11,7 +11,7 @@ export default class Authorization {
 		return webix.ajax().post(loginUrl, obj);
 	}
 
-	logout() {
-		return webix.ajax().get(logoutUrl);
+	logout(date) {
+		return webix.ajax().post(logoutUrl, date);
 	}
 }
