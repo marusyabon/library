@@ -1,4 +1,4 @@
-import {JetView} from 'webix-jet';
+import {JetView, plugins} from 'webix-jet';
 import Authorization from '../../authorization';
 
 export default class TopView extends JetView{
@@ -9,22 +9,15 @@ export default class TopView extends JetView{
 		};
 
 		const menu = {
-			view:'menu', 
+			view:'menu', id:'top:menu', 
 			css:'app_menu',
 			width:180, layout:'y', select:true,
 			template:'<span class="webix_icon #icon#"></span> #value# ',
-			value: 'main',
+			value: 'Home',
 			data:[
-				{ value:'My books', id:'main', icon:'fas fa-bookmark' },
-				{ value:'Library', id:'library',  icon:'fas fa-book-reader' },
-				{ value:'Settings', id:'settings',  icon:'fas fa-cog' },
-			],
-			on:{
-				onMenuItemClick: (id) => {
-					// this.menuClick(id);
-					this.app.show('reader.index/reader.'+id);
-				}
-			}
+				{ value:'Home', id:'main', icon:'fas fa-home' },
+				// { value:'Profile', id:'profile',  icon:'fas fa-user' }
+			]
 		};
 
 		const logout = {
@@ -51,6 +44,8 @@ export default class TopView extends JetView{
 	}
 
 	init() {
+		this.use(plugins.Menu, 'top:menu');
+
 		const authorization = new Authorization();
 
 		this.$$('logoutBtn').attachEvent('onItemClick', () => {
@@ -64,9 +59,5 @@ export default class TopView extends JetView{
 				}
 			});
 		});
-	}
-
-	menuClick(id) {
-		this.app.show('reader.'+id);
 	}
 }

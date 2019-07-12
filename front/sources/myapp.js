@@ -19,8 +19,8 @@ if (!BUILD_AS_MODULE){
 	webix.ready(() => {
 		const app = new MyApp();
 		app.use(plugins.Locale);
-		/*app.attachEvent('app:guard', (url, view, nav) => {
-			if(url.indexOf('/home') !== -1) {
+		app.attachEvent('app:guard', (url, view, nav) => {
+			if(url.indexOf('index') !== -1) { 
 				webix.ajax().get('http://localhost:3000/check').then(
 					(res) => {
 						const response = res.json();
@@ -35,7 +35,7 @@ if (!BUILD_AS_MODULE){
 					}
 				);
 			}
-		});*/
+		});
 
 		app.render();
 	});

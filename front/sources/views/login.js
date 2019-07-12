@@ -1,7 +1,7 @@
 import {JetView} from 'webix-jet';
 import Authorization from '../authorization';
 
-export default class IndexPage extends JetView{
+export default class LoginPage extends JetView{
 	config(){
 
 		const loginForm = {
@@ -51,7 +51,18 @@ export default class IndexPage extends JetView{
 
 			authorization.login(values).then((response) => {	
 				if (response) {
-					this.show('reader.index/reader.main');
+					let token = response.json().token;
+					token = token.split(' ')[1];
+					const base64Url = token.split('.')[1];
+					const userData = JSON.parse(window.atob(base64Url));
+					this.app._userData = userData;
+
+					if(userData.role === 'admin') {
+						this.show('admin.index');
+					}					
+					if(userData.role === 'reader') {
+						this.show('reader.index/reader.main');
+					}			
 				}
 				else {
 					webix.message(response);

@@ -49,10 +49,6 @@
     }
 }
 
-.app_header.webix_header{
-	text-align: center;
-}
-
 .app_layout.webix_layout_clean{
 	background: #EBEDF0;
 }
@@ -69,4 +65,10 @@
 
 .center {
     text-align: center;
+}
+
+.page_header {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 40px;
 }

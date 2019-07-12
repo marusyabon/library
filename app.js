@@ -6,6 +6,7 @@ import logger from 'morgan';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
+import booksRouter from './routes/books';
 import {router as checkRouter} from './routes/check';
 import loginRouter from './routes/login';
 import logoutRouter from './routes/logout';
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/books', booksRouter);
 app.use('/check', checkRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
