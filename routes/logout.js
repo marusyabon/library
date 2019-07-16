@@ -1,7 +1,8 @@
 import express from "express";
-const router = express.Router();
 import connection from '../db';
 import mysql from 'mysql2';
+
+const router = express.Router();
 
 router.post('/', (req, res) => {
 	const cookie = req.headers.cookie;

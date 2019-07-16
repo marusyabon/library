@@ -56,12 +56,13 @@ export default class LoginPage extends JetView{
 					const base64Url = token.split('.')[1];
 					const userData = JSON.parse(window.atob(base64Url));
 					this.app._userData = userData;
+					const id = userData.id;
 
 					if(userData.role === 'admin') {
-						this.show('admin.index');
+						this.show(`admin.index?id=${id}`);
 					}					
 					if(userData.role === 'reader') {
-						this.show('reader.index/reader.main');
+						this.show(`reader.index?id=${id}/reader.main`);
 					}			
 				}
 				else {

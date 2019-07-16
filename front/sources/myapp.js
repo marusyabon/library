@@ -1,5 +1,5 @@
 import './styles/app.css';
-import {JetApp, EmptyRouter, HashRouter, plugins } from 'webix-jet';
+import {JetApp, EmptyRouter, HashRouter } from 'webix-jet';
 
 export default class MyApp extends JetApp{
 	constructor(config){
@@ -18,13 +18,24 @@ export default class MyApp extends JetApp{
 if (!BUILD_AS_MODULE){
 	webix.ready(() => {
 		const app = new MyApp();
-		app.use(plugins.Locale);
 		app.attachEvent('app:guard', (url, view, nav) => {
-			if(url.indexOf('index') !== -1) { 
+			if(url.indexOf('id') !== -1) {
+				const urlParts = url.split('/');
+				let targetPart;
+
+				urlParts.forEach((el) => {
+					if(el.indexOf('id') != -1) {
+						targetPart = el;
+					}
+				});
+				const i = targetPart.indexOf('id');
+				const id = targetPart.slice(i+3);
+
 				webix.ajax().get('http://localhost:3000/check').then(
 					(res) => {
 						const response = res.json();
-						if (!response.allowAccess) {
+						console.log(res)
+						if (!response) {
 							app.show('/login');
 						}
 					},
@@ -34,8 +45,26 @@ if (!BUILD_AS_MODULE){
 						}						
 					}
 				);
+
 			}
 		});
+		// app.attachEvent('app:guard', (url, view, nav) => {
+		// 	if(url.indexOf('index') !== -1) { 
+		// 		webix.ajax().get('http://localhost:3000/check').then(
+		// 			(res) => {
+		// 				const response = res.json();
+		// 				if (!response.allowAccess) {
+		// 					app.show('/login');
+		// 				}
+		// 			},
+		// 			(error) => {
+		// 				if(error.status == 401) {
+		// 					app.show('/login');
+		// 				}						
+		// 			}
+		// 		);
+		// 	}
+		// });
 
 		app.render();
 	});

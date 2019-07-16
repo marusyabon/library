@@ -8,6 +8,7 @@ import indexRouter from './routes/index';
 import usersRouter from './routes/users';
 import booksRouter from './routes/books';
 import {router as checkRouter} from './routes/check';
+import registerRouter from './routes/register';
 import loginRouter from './routes/login';
 import logoutRouter from './routes/logout';
 import './config/passport';
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
 app.use('/check', checkRouter);
+app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 

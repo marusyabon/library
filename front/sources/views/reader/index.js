@@ -21,7 +21,6 @@ export default class TopView extends JetView{
 			],
 			on:{
 				onMenuItemClick: (id) => {
-					// this.menuClick(id);
 					this.app.show('reader.index/reader.'+id);
 				}
 			}
@@ -64,9 +63,5 @@ export default class TopView extends JetView{
 				}
 			});
 		});
-	}
-
-	menuClick(id) {
-		this.app.show('reader.'+id);
 	}
 }

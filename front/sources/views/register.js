@@ -42,8 +42,16 @@ export default class RegisterPage extends JetView{
 			const authorization = new Authorization();
 
 			authorization.register(values).then((response) => {
-				if (response) {
-					this.show('/reader/index/main');
+				const status = response.json().status;
+				const id = response.json().id;
+				if (status === 2) {
+					this.show(`reader.index?id=${id}/reader.main`);
+				}
+				else {
+					if(response.json().reason === 'userExist') {
+						this.show('/login');
+					}
+					webix.message(response.json().data);
 				}
 			});
 		});

@@ -1,7 +1,7 @@
 import passport from'passport';
 import Local from 'passport-local';
 import JWT from 'passport-jwt';
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import connection from '../db';
 import mysql from 'mysql2';
 
@@ -34,22 +34,16 @@ passport.use('local', new LocalStrategy({
 		
 		connection.query(
 			query,
-			function (err, results, fields) {
+			function (err, results) {
 				const user_password = results[0].account_password;
 
-				if(password == user_password) {
-					return done(null, results[0]);
-					/*bcrypt.compare(password, userDocument.passwordHash, (err, isMatch) => {
-						if (isMatch) {
-							return done(null, userDocument);
-						} else {
-							return done('Incorrect Username / Password');
-						}
-					});	*/
-				}
-				else {
-					return done('Incorrect Username / Password');
-				}
+				bcrypt.compare(password, user_password, (err, isMatch) => {
+					if (isMatch) {
+						return done(null, results[0]);
+					} else {
+						return done('Incorrect Username / Password');
+					}
+				});	
 			}
 		);		
 	} catch (error) {
