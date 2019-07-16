@@ -29,7 +29,7 @@ if (!BUILD_AS_MODULE){
 			
 					}
 				});
-				
+
 				const i = targetPart.indexOf('id');
 				const role = targetPart.split('.')[0];
 				const id = targetPart.slice(i+3);

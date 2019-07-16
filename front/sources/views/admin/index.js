@@ -78,7 +78,7 @@ export default class TopView extends JetView{
 
 	init() {
 		UsersModel.getDataFromServer().then((dbData) => {
-			let usersArr = dbData.json().data;
+			let usersArr = dbData.json();
 			usersArr = usersArr.map((el) => {
 				el.full_name = el.user_name + ' ' + el.user_surname;
 				const format = webix.Date.dateToStr("%Y-%m-%d");
