@@ -15,7 +15,7 @@ function auth(req, res, next) {
 }
 
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-	res.json({res: res});
+	res.json(res.req.user);
 });
 
 export {auth, router};

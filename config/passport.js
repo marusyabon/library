@@ -35,13 +35,13 @@ passport.use('local', new LocalStrategy({
 		connection.query(
 			query,
 			function (err, results) {
-				const user_password = results[0].account_password;
+				const user_password = results[0] ? results[0].account_password : '';
 
 				bcrypt.compare(password, user_password, (err, isMatch) => {
 					if (isMatch) {
 						return done(null, results[0]);
 					} else {
-						return done('Incorrect Username / Password');
+						return done(err, 'Incorrect Username / Password');
 					}
 				});	
 			}

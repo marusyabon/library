@@ -26,16 +26,19 @@ if (!BUILD_AS_MODULE){
 				urlParts.forEach((el) => {
 					if(el.indexOf('id') != -1) {
 						targetPart = el;
+			
 					}
 				});
+				
 				const i = targetPart.indexOf('id');
+				const role = targetPart.split('.')[0];
 				const id = targetPart.slice(i+3);
 
 				webix.ajax().get('http://localhost:3000/check').then(
 					(res) => {
 						const response = res.json();
-						console.log(res)
-						if (!response) {
+
+						if (!response || response.role != role || response.id != id) {
 							app.show('/login');
 						}
 					},
