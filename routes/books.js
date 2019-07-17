@@ -4,11 +4,12 @@ import connection from '../db';
 
 /* GET users listing. */
 router.get('/', function (req, res) {
-	connection.query('SELECT * FROM `books`',
+	connection.query('SELECT * FROM `books` LEFT JOIN `likes` ON `id` = `book_id`',
 		function (err, results) {
 			if(!err) {
-				res.send({data:results});
+				return res.send(results);
 			}
+			res.status(304);
 		}
 	);	
 });

@@ -82,7 +82,8 @@ export default class BookCard extends JetView {
 	}
 	
 	showPopup(book) {
-		this.id = book.id;
+		this.bookId = book.id;
+		this.userId = this.getParam("id", true);
 
 		const dummyCover = 'https://i.pinimg.com/originals/ad/fd/58/adfd5873be3841f0660e6aaa00cde18e.jpg';
 		this.$$('bookCard').setValues(book);
@@ -102,6 +103,15 @@ export default class BookCard extends JetView {
 			this.$$('orderBook').hide();
 		}
 
+		if(book.user_id == this.userId) {
+			this.$$('likeButton').define('label', '<i class="fas fa-heart"></i>');
+			this.$$('likeButton').refresh();
+		}
+		else {
+			this.$$('likeButton').define('label', '<i class="far fa-heart"></i>');
+			this.$$('likeButton').refresh();
+		}
+
 		this.getRoot().show();
 	}
 
@@ -110,8 +120,8 @@ export default class BookCard extends JetView {
 	}
 
 	likeBook() {
-		const userId = this.getParam("id", true);
-		const bookId = this.id;
+		const userId = this.userId;
+		const bookId = this.bookId;
 		
 		LikesModel.addLike(userId, bookId).then((response) => {
 			const status = response.json().serverStatus;
