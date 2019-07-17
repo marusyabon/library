@@ -29,8 +29,9 @@ router.post('/', (req, res) => {
 								console.error(err.stack);
 								return res.send({data: err});
 							}
-		
+
 							const payload = {
+								id: result.insertId,
 								role: 'reader',
 								email: username,
 								expires: Date.now() + 10800000,
@@ -40,7 +41,6 @@ router.post('/', (req, res) => {
 							/** assign our jwt to the cookie */
 							res.cookie('jwt', token, { maxAge: 900000 });
 							res.status(200).send({id: result.insertId, status: result.serverStatus});
-										
 						}
 					);
 				});	

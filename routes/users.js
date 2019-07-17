@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/:id', function (req, res, next) {
 	const id = req.params.id;
-	const query = mysql.format('SELECT * FROM `users` WHERE `user_id` = ?', [id]);
+	const query = mysql.format('SELECT * FROM `users` WHERE `id` = ?', [id]);
 
 	connection.query(query,
 		function (err, results) {
@@ -29,7 +29,7 @@ router.get('/:id', function (req, res, next) {
 
 router.put('/', function (req, res, next) {
 	const user = req.body;
-	const query = mysql.format('UPDATE `users` SET `user_name` = ?, `user_surname` = ?, `passport_ID` = ?, `birth_date` = ?, `address` = ?, `phone_numbers` = ?, `email` = ? WHERE `user_id` = ?', [
+	const query = mysql.format('UPDATE `users` SET `user_name` = ?, `user_surname` = ?, `passport_ID` = ?, `birth_date` = ?, `address` = ?, `phone_numbers` = ?, `email` = ? WHERE `id` = ?', [
 		user.user_name,
 		user.user_surname,
 		user.passport_ID,
@@ -37,7 +37,7 @@ router.put('/', function (req, res, next) {
 		user.address,
 		user.phone_numbers,
 		user.email,
-		user.user_id
+		user.id
 	]);
 
 	connection.query(query,

@@ -72,3 +72,18 @@
     font-size: 16px;
     line-height: 40px;
 }
+
+.book_cover .webix_template div {
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
+.like_button .webixtype_base {
+    background-color: transparent;
+}
+
+.like_button:hover .fa-heart {
+    font-weight: 600;
+}

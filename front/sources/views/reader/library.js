@@ -1,5 +1,6 @@
 import { JetView } from 'webix-jet';
 import BooksModel from '../../models/books';
+import BookCard from './bookCard';
 
 export default class Library extends JetView {
 	config() {
@@ -15,7 +16,7 @@ export default class Library extends JetView {
 			select: true,
 			columns: [
 				{
-					id: 'book_id',
+					id: 'id',
 					hidden: true,					
 				},
 				{
@@ -50,7 +51,12 @@ export default class Library extends JetView {
 					width: 50,
 					template: '<i class="fas fa-eye"></i>'
 				}
-			]
+			],
+			onClick: {
+				'fa-eye': (e, id) => {
+					this.showBookCard(id);
+				},
+			}
 		};
 
 		return {
@@ -62,6 +68,14 @@ export default class Library extends JetView {
 		BooksModel.getDataFromServer().then((dbData) => {
 			const booksArr = dbData.json().data;
 			$$('dt_library').parse(booksArr);
+			this.booksArr = booksArr;
 		});
+
+		this._bookCard = this.ui(BookCard);
+	}
+
+	showBookCard(id) {
+		const book = this.booksArr.find(el => el.id == id);
+		this._bookCard.showPopup(book);
 	}
 }

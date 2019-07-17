@@ -18,7 +18,7 @@ export default class Settings extends JetView {
 			view: 'form',
 			localId: 'userDataForm',
 			elements: [
-				{ view: 'text', name: 'userId', localId: 'user_id', hidden: true },
+				{ view: 'text', name: 'id', localId: 'user_id', hidden: true },
 				{ view: 'text', label: 'First name',name: 'user_name', labelWidth: 90, labelAlign: 'right'},
 				{ view: 'text', label: 'Last name',name: 'user_surname', labelWidth: 90, labelAlign: 'right'},
 				{ view: 'text', label: 'Passport ID',name: 'passport_ID', labelWidth: 90, labelAlign: 'right'},

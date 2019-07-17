@@ -15,7 +15,7 @@ router.post('/', (req, res, next) => {
 
 			/** This is what ends up in our JWT */
 			const payload = {
-				id: user.user_id,
+				id: user.id,
 				// firstname: user.user_name,
 				// lastname: user.user_surname,
 				role: user.role_name,

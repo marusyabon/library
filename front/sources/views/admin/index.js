@@ -23,7 +23,7 @@ export default class TopView extends JetView{
 			localId: 'usersList',
 			columns: [
 				{
-					id: 'user_id',
+					id: 'id',
 					hidden: 1
 				},
 				{
