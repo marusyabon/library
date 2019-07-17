@@ -1,4 +1,5 @@
 import { JetView } from 'webix-jet';
+import LikesModel from '../../models/likes';
 
 export default class BookCard extends JetView {
 	config() {
@@ -81,6 +82,8 @@ export default class BookCard extends JetView {
 	}
 	
 	showPopup(book) {
+		this.id = book.id;
+
 		const dummyCover = 'https://i.pinimg.com/originals/ad/fd/58/adfd5873be3841f0660e6aaa00cde18e.jpg';
 		this.$$('bookCard').setValues(book);
 		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
@@ -104,5 +107,18 @@ export default class BookCard extends JetView {
 
 	orderBook() {
 		
+	}
+
+	likeBook() {
+		const userId = this.getParam("id", true);
+		const bookId = this.id;
+		
+		LikesModel.addLike(userId, bookId).then((response) => {
+			const status = response.json().serverStatus;
+			if(status == 2) {
+				this.$$('likeButton').define('label', '<i class="fas fa-heart"></i>');
+				this.$$('likeButton').refresh();
+			}
+		});
 	}
 }
