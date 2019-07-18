@@ -58,10 +58,8 @@ export default class TopView extends JetView{
 			const format = webix.Date.dateToStr("%Y-%m-%d");
 			const currentDate = format(new Date());
 			
-			authorization.logout({currentDate}).then((response) => {
-				if(response) {
-					app.show('/login');
-				}
+			authorization.logout({currentDate}).then(() => {
+				app.show('/login');
 			});
 		});
 	}

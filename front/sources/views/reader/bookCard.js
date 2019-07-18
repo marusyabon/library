@@ -1,5 +1,6 @@
 import { JetView } from 'webix-jet';
 import LikesModel from '../../models/likes';
+import {toggleElement} from '../../scripts'; 
 
 export default class BookCard extends JetView {
 	config() {
@@ -82,6 +83,8 @@ export default class BookCard extends JetView {
 	}
 	
 	showPopup(book) {
+		console.log(book)
+		this.book = book;
 		this.bookId = book.id;
 		this.userId = this.getParam("id", true);
 
@@ -89,28 +92,9 @@ export default class BookCard extends JetView {
 		this.$$('bookCard').setValues(book);
 		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
 
-		if(book.book_file) {
-			this.$$('downloadBook').show();
-		}
-		else {
-			this.$$('downloadBook').hide();
-		}
-		
-		if(book.available_copies) {
-			this.$$('orderBook').show();
-		}
-		else {
-			this.$$('orderBook').hide();
-		}
-
-		if(book.user_id == this.userId) {
-			this.$$('likeButton').define('label', '<i class="fas fa-heart"></i>');
-			this.$$('likeButton').refresh();
-		}
-		else {
-			this.$$('likeButton').define('label', '<i class="far fa-heart"></i>');
-			this.$$('likeButton').refresh();
-		}
+		toggleElement(book.book_file, this.$$('downloadBook'));
+		toggleElement(book.available_copies, this.$$('orderBook'));
+		this.toggleLike(book.user_id == this.userId);
 
 		this.getRoot().show();
 	}
@@ -122,13 +106,41 @@ export default class BookCard extends JetView {
 	likeBook() {
 		const userId = this.userId;
 		const bookId = this.bookId;
-		
-		LikesModel.addLike(userId, bookId).then((response) => {
-			const status = response.json().serverStatus;
-			if(status == 2) {
-				this.$$('likeButton').define('label', '<i class="fas fa-heart"></i>');
-				this.$$('likeButton').refresh();
-			}
-		});
+
+		if(this.book.user_id == this.userId) {
+			LikesModel.removeLike(userId, bookId).then((response) => {
+				const status = response.json().serverStatus;
+				if(status == 2) {
+					this.unsetLike();
+				}
+			});
+		}
+		else{
+			LikesModel.addLike(userId, bookId).then((response) => {
+				const status = response.json().serverStatus;
+				if(status == 2) {
+					this.setLike();
+				}
+			});
+		}		
+	}	
+
+	toggleLike(condition) {
+		if(condition) {
+			this.setLike();
+		}
+		else {
+			this.unsetLike();
+		}
+	}
+
+	setLike() {
+		this.$$('likeButton').define('label', '<i class="fas fa-heart"></i>');
+		this.$$('likeButton').refresh();
+	}
+
+	unsetLike() {
+		this.$$('likeButton').define('label', '<i class="far fa-heart"></i>');
+		this.$$('likeButton').refresh();
 	}
 }

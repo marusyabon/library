@@ -67,6 +67,7 @@ export default class Library extends JetView {
 	init() {
 		BooksModel.getDataFromServer().then((dbData) => {
 			const booksArr = dbData.json();
+
 			$$('dt_library').parse(booksArr);
 			this.booksArr = booksArr;
 		});

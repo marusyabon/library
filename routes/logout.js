@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
 	const cookie = req.headers.cookie;
+	console.log(req.headers)
 	const cookieArr = cookie.split(' ');
 	cookieArr.forEach((el) => {
 		if (el.indexOf('jwt') == 0) {
@@ -16,11 +17,12 @@ router.post('/', (req, res) => {
 			connection.query(
 				query,
 				function (err, result) {
-					if (err) {
-						return console.log(err);
-					}		
-					res.clearCookie('jwt');
-					res.status(200).send();			
+					if (!err) {
+						res.clearCookie('jwt');
+						res.status(200);
+					}				
+					console.log(err);
+					res.status(304).send();	
 				}
 			);
 		}

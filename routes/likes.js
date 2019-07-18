@@ -15,6 +15,24 @@ router.post('/', function (req, res) {
 			if (!err) {
 				return res.send(results);
 			}
+			console.log(err);
+			res.status(304).send(err);
+		}
+	);
+});
+
+router.delete('/', function (req, res) {
+	const book_id = req.body.bookId;
+	const user_id = req.body.userId;
+
+	const query = mysql.format("DELETE FROM likes WHERE `book_id` = ? AND `user_id` = ?", [book_id, user_id]);
+	connection.query(
+		query,
+		function (err, results) {
+			if (!err) {
+				return res.send(results);
+			}
+			console.log(err);
 			res.status(304).send(err);
 		}
 	);

@@ -10,11 +10,20 @@ class LikesModel {
 
 	addLike(userId, bookId) {
 		const data = {
-			userId: userId, 
+			userId: userId,
 			bookId: bookId
 		};
 
 		return webix.ajax().post(this._url, data);
+	}
+
+	removeLike(userId, bookId) {
+		const data = {
+			userId: userId,
+			bookId: bookId
+		};
+
+		return webix.ajax().del(this._url, data);
 	}
 }
 
