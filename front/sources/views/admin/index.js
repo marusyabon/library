@@ -21,7 +21,7 @@ export default class TopView extends JetView{
 
 		const dtable = {
 			view: 'datatable',
-			localId: 'usersList',
+			id: 'usersList',
 			columns: [
 				{
 					id: 'id',
@@ -115,7 +115,7 @@ export default class TopView extends JetView{
 				return el;
 			});
 			this.usersData = usersArr;
-			this.$$('usersList').parse(usersArr);
+			$$('usersList').parse(usersArr);
 		});
 		
 

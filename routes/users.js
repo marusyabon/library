@@ -60,7 +60,7 @@ router.post('/', (req, res) => {
 
 router.put('/', function (req, res, next) {
 	const user = req.body;
-	const query = mysql.format('UPDATE `users` SET `user_name` = ?, `user_surname` = ?, `passport_ID` = ?, `birth_date` = ?, `address` = ?, `phone_numbers` = ?, `email` = ? WHERE `id` = ?', [
+	const query = mysql.format('UPDATE `users` SET `user_name` = ?, `user_surname` = ?, `passport_ID` = ?, `birth_date` = ?, `address` = ?, `phone_numbers` = ?, `email` = ?, `capabilities_id` = ? WHERE `id` = ?', [
 		user.user_name,
 		user.user_surname,
 		user.passport_ID,
@@ -68,6 +68,7 @@ router.put('/', function (req, res, next) {
 		user.address,
 		user.phone_numbers,
 		user.email,
+		user.capabilities_id,
 		user.id
 	]);
 

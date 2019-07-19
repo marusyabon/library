@@ -7,7 +7,7 @@ const toggleElement = (condition, element) => {
 	}
 };
 
-const addToDb = (Model, data, successAction) => {debugger
+const addItem = (Model, data, successAction) => {
 	Model.addItem(data).then((response) => {
 
 		const status = response.json().serverStatus;
@@ -18,4 +18,15 @@ const addToDb = (Model, data, successAction) => {debugger
 	});
 };
 
-export {toggleElement, addToDb};
+const updateItem = (Model, data, successAction) => {
+	Model.updateItem(data).then((response) => {
+
+		const status = response.json().serverStatus;
+		if(status == 2) {
+			successAction;
+			this.hideWindow();
+		}
+	});
+};
+
+export {toggleElement, addItem, updateItem};
