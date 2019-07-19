@@ -1,13 +1,14 @@
 import {JetView} from 'webix-jet';
 import Authorization from '../../authorization';
 import UsersModel from '../../models/users';
+import UserForm from './userForm';
 
 export default class TopView extends JetView{
 	config(){
 
 		const header = {
 			type:'header', 
-			template: 'You entered as *here will be name*'
+			template: 'Users list'
 		};
 
 		const logout = {
@@ -50,10 +51,11 @@ export default class TopView extends JetView{
 				{
 					id: 'address',
 					header: 'Address',
+					minWidth: 180,
 					fillspace: 1.5
 				},
 				{
-					id: 'phone_number',
+					id: 'phone_numbers',
 					header: 'Phone number',
 					width: 190
 				},
@@ -61,16 +63,43 @@ export default class TopView extends JetView{
 					id: 'email',
 					header: 'Email',
 					width: 180
-				}			
-			]
+				},
+				{
+					id: 'edit', 
+					header: 'Edit', 
+					width: 50,
+					template: '{common.editIcon()}'
+				}
+			],
+			onClick: {
+				'wxi-pencil': (e, id) => {
+					this.editUser(id);
+				}
+			}
+		};
+
+		const addUserBtn = {
+			view: 'button',
+			value: 'Add user',
+			type: 'form',
+			width: 100,
+			click: () => {
+				this.addUser();
+			}
 		};
 
 		const ui = {
 			rows:[
 				{ 
+					type: 'clean',
 					cols: [header, logout] 
 				},
-				dtable							
+				dtable,
+				{
+					cols: [
+						{}, addUserBtn, {}
+					]
+				}											
 			]
 		};
 		return ui;
@@ -85,6 +114,7 @@ export default class TopView extends JetView{
 				el.birth_date = format(new Date(el.birth_date));
 				return el;
 			});
+			this.usersData = usersArr;
 			this.$$('usersList').parse(usersArr);
 		});
 		
@@ -102,5 +132,16 @@ export default class TopView extends JetView{
 				}
 			});
 		});
+
+		this._userForm = this.ui(UserForm);
+	}
+
+	editUser(id) {
+		const user = this.usersData.find(el => el.id == id);
+		this._userForm.showWindow(user);
+	}
+
+	addUser() {
+		this._userForm.showWindow();
 	}
 }

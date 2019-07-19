@@ -1,5 +1,7 @@
 import { JetView } from 'webix-jet';
 import UsersModel from '../../models/users';
+import {addToDb} from '../../scripts'; 
+
 
 export default class Settings extends JetView {
 	config() {
@@ -47,11 +49,7 @@ export default class Settings extends JetView {
 
 	saveForm () {
 		const data = this.$$('userDataForm').getValues();
-		UsersModel.updateItem(data).then((response) => {
-			const status = response.json().serverStatus;
-			if(status == 2) {
-				this.webix.message('New data saved');
-			}
-		});
+		const successAction = this.webix.message('New data saved');
+		addToDb(UsersModel, data, successAction);
 	}
 }
