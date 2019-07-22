@@ -1,6 +1,7 @@
 import { JetView } from 'webix-jet';
 import LikesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
+import {dummyCover} from '../../consts'; 
 
 export default class BookCard extends JetView {
 	config() {
@@ -87,7 +88,6 @@ export default class BookCard extends JetView {
 		this.bookId = book.id;
 		this.userId = this.getParam("id", true);
 
-		const dummyCover = 'https://i.pinimg.com/originals/ad/fd/58/adfd5873be3841f0660e6aaa00cde18e.jpg';
 		this.$$('bookCard').setValues(book);
 		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
 

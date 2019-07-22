@@ -57,6 +57,13 @@ export default class Library extends JetView {
 					template: '<i class="fas fa-eye"></i>'
 				},
 				{
+					id: 'editCol',
+					header: 'Edit',
+					css: 'center',
+					width: 50,
+					template: '<i class="fas fa-edit"></i>'
+				},
+				{
 					id: 'removeCol',
 					header: 'Remove',
 					css: 'center',
@@ -66,6 +73,9 @@ export default class Library extends JetView {
 			],
 			onClick: {
 				'fa-eye': (e, id) => {
+					this.showBookCard(id);
+				},
+				'fa-edit': (e, id) => {
 					this.showBookCard(id);
 				},
 				'fa-trash': (e, id) => {
@@ -81,9 +91,15 @@ export default class Library extends JetView {
 
 	init() {
 		const grid = $$('dt_library');
+		
 
-		if(this.l_config.role === 'reader') {
+		if (this.l_config.role === 'reader') {
+			grid.getColumnConfig('editCol').hidden = true;
 			grid.getColumnConfig('removeCol').hidden = true;
+			grid.refreshColumns();
+		}
+		else if (this.l_config.role === 'librarian') {
+			grid.getColumnConfig('viewCol').hidden = true;
 			grid.refreshColumns();
 		}
 

@@ -91,7 +91,6 @@ export default class UserForm extends JetView {
 		const successAction = (message) => {
 			this.webix.message(message);
 			this.hideWindow();
-			$$('usersList').refresh();
 		};
 		
 		if(this.form.validate()) {
@@ -100,7 +99,7 @@ export default class UserForm extends JetView {
 			}
 
 			else {
-				updateItem(UsersModel, data, successAction('Updates'));
+				updateItem(UsersModel, data, successAction('Updated'));
 			}
 		}		
 	}

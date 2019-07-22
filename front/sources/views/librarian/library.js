@@ -1,6 +1,6 @@
 import {JetView} from "webix-jet";
 import Library from '../common/library';
-import BookCard from '../reader/bookCard';
+import BookCard from './bookCard';
 
 export default class libLibrary extends JetView {
 	config() {

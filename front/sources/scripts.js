@@ -12,8 +12,9 @@ const addItem = (Model, data, successAction) => {
 
 		const status = response.json().serverStatus;
 		if(status == 2) {
-			successAction;
-			this.hideWindow();
+			Model.getDataFromServer().then(() => {
+				successAction;
+			});			
 		}
 	});
 };
@@ -24,7 +25,6 @@ const updateItem = (Model, data, successAction) => {
 		const status = response.json().serverStatus;
 		if(status == 2) {
 			successAction;
-			this.hideWindow();
 		}
 	});
 };
