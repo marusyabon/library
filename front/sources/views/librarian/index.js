@@ -9,15 +9,23 @@ export default class TopView extends JetView{
 		};
 
 		const menu = {
-			view:'menu', id:'top:menu', 
+			view:'menu', 
 			css:'app_menu',
-			width:180, layout:'y', select:true,
+			width:180, 
+			layout:'y', 
+			select:true,
 			template:'<span class="webix_icon #icon#"></span> #value# ',
-			value: 'Home',
+			value: 'main',
 			data:[
-				{ value:'Home', id:'main', icon:'fas fa-home' },
-				// { value:'Profile', id:'profile',  icon:'fas fa-user' }
-			]
+				{ value:'Library', id:'library',  icon:'fas fa-book-reader' },
+				{ value:'Users', id:'users',  icon:'fas fa-cog' },
+			],
+			on:{
+				onMenuItemClick: (id) => {
+					const user_id = this.getParam("id", true);
+					this.app.show(`librarian.index?id=${user_id}/librarian.${id}`);
+				}
+			}
 		};
 
 		const logout = {
@@ -44,8 +52,6 @@ export default class TopView extends JetView{
 	}
 
 	init() {
-		this.use(plugins.Menu, 'top:menu');
-
 		const authorization = new Authorization();
 
 		this.$$('logoutBtn').attachEvent('onItemClick', () => {
@@ -53,10 +59,8 @@ export default class TopView extends JetView{
 			const format = webix.Date.dateToStr("%Y-%m-%d");
 			const currentDate = format(new Date());
 			
-			authorization.logout({currentDate}).then((response) => {
-				if(response) {
-					app.show('/login');
-				}
+			authorization.logout({currentDate}).then(() => {
+				app.show('/login');
 			});
 		});
 	}

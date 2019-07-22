@@ -1,11 +1,11 @@
 import {JetView} from "webix-jet";
 import Library from '../common/library';
-import BookCard from './bookCard';
+import BookCard from '../reader/bookCard';
 
-export default class readerLibrary extends JetView {
+export default class libLibrary extends JetView {
 	config() {
 		const l_config = {
-			role: 'reader'
+			role: 'librarian'
 		};
 
 		return {

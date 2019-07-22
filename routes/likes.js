@@ -1,7 +1,8 @@
 import { Router } from 'express';
-const router = Router();
 import connection from '../db';
 import mysql from 'mysql2';
+
+const router = Router();
 
 /* GET users listing. */
 router.post('/', function (req, res) {

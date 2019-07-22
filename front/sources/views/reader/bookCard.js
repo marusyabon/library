@@ -83,7 +83,6 @@ export default class BookCard extends JetView {
 	}
 	
 	showPopup(book) {
-		console.log(book)
 		this.book = book;
 		this.bookId = book.id;
 		this.userId = this.getParam("id", true);

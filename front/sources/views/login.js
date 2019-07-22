@@ -61,6 +61,9 @@ export default class LoginPage extends JetView{
 					if(userData.role === 'admin') {
 						this.show(`admin.index?id=${id}`);
 					}					
+					if(userData.role === 'librarian') {
+						this.show(`librarian.index?id=${id}/librarian.library`);
+					}			
 					if(userData.role === 'reader') {
 						this.show(`reader.index?id=${id}/reader.main`);
 					}			
