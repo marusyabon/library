@@ -92,7 +92,6 @@ export default class Library extends JetView {
 	init() {
 		const grid = $$('dt_library');
 		
-
 		if (this.l_config.role === 'reader') {
 			grid.getColumnConfig('editCol').hidden = true;
 			grid.getColumnConfig('removeCol').hidden = true;

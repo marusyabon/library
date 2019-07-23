@@ -35,7 +35,7 @@ router.post('/', (req, res) => {
 		const query = mysql.format('INSERT INTO `users` (`user_name`, `user_surname`, `capabilities_id`, `passport_ID`, `birth_date`, `address`, `phone_numbers`, `email`, `account_password`) VALUES (?,?,?,?,?,?,?,?,?)', [
 			user.user_name,
 			user.user_surname,
-			1,
+			user.capabilities_id,
 			user.passport_ID,
 			user.birth_date || null,
 			user.address,

@@ -22,7 +22,9 @@ export default class BookCard extends JetView {
 			elements: [
 				{ view: 'text', label: 'Title', labelWidth: 130, width: 310, labelAlign: 'right', name: 'book_title' },
 				{ view: 'text', label: 'Author', labelWidth: 130, width: 310, labelAlign: 'right', name: 'author_name' },
-				{ view: 'text', label: 'Genres', labelWidth: 130, width: 310, labelAlign: 'right', name: 'genres' },
+				{ view: 'combo', label: 'Genres', labelWidth: 130, width: 310, labelAlign: 'right', name: 'genres', options: [
+					'', 'Fiction', 'Fantasy', 'Thriller', 'Horror', 'Mystery', 'Historical', 'Westerns', 'Family', 'Dark comedy'
+				]},
 				{ view: 'text', label: 'Country', labelWidth: 130, width: 310, labelAlign: 'right', name: 'country_of_publication' },
 				{ view: 'text', label: 'Publishing house', labelWidth: 130, width: 310, labelAlign: 'right', name: 'publishing_house' },
 				{ view: 'text', label: 'Available copies', labelWidth: 130, width: 310, labelAlign: 'right', name: 'available_copies' },
@@ -64,11 +66,18 @@ export default class BookCard extends JetView {
 	}
 
 	showPopup(book) {
-		this.book = book;
-		this.bookId = book.id;
+		this.isNew = book ? false : true;
 
-		this.form.setValues(book);
-		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
+		if(this.isNew) {
+			this.$$('bookCover').hide();
+		}
+		else {
+			this.book = book;
+			this.bookId = book.id;
+
+			this.form.setValues(book);
+			this.$$('bookCover').setValues(book.cover_photo || dummyCover);			
+		}		
 
 		this.getRoot().show();	
 	}
