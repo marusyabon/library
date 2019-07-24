@@ -1,3 +1,5 @@
+import {SUCCESS} from './consts';
+
 const toggleElement = (condition, element) => {
 	if (condition) {
 		element.show();
@@ -11,9 +13,9 @@ const addItem = (Model, data, successAction) => {
 	Model.addItem(data).then((response) => {
 
 		const status = response.json().serverStatus;
-		if(status == 2) {
+		if(status == SUCCESS) {
 			Model.getDataFromServer().then(() => {
-				successAction;
+				successAction();
 			});			
 		}
 	});
@@ -23,8 +25,8 @@ const updateItem = (Model, data, successAction) => {
 	Model.updateItem(data).then((response) => {
 
 		const status = response.json().serverStatus;
-		if(status == 2) {
-			successAction;
+		if(status == SUCCESS) {
+			successAction();
 		}
 	});
 };

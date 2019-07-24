@@ -17,8 +17,28 @@ export default class BookCard extends JetView {
 			}
 		};
 
+		const addBookFile = {
+			view: 'uploader',
+			label: '<i class="fas fa-file-upload"></i> Upload text file',
+			localId: 'bookFile',
+			type: 'htmlbutton',
+			width: 150,
+			upload: 'http://localhost:3000/files/upload',
+			on: {
+				'onFileUpload': (file, response) => {
+					if (response.status == "server") {
+						file.book_id = this.bookId;
+						FilesModel.addItem(file);
+					}
+				},
+				'onFileUploadError': () => {
+					webix.message('Uploading failed');
+				}
+			}
+		};
+
 		const bookCard = {
-			localId: 'lb_bookCard',
+			localId: 'bookCardLibrarian',
 			view: 'form',
 			elements: [
 				{ view: 'text', label: 'Title', labelWidth: 130, width: 310, labelAlign: 'right', name: 'book_title' },
@@ -66,7 +86,7 @@ export default class BookCard extends JetView {
 	}
 
 	init() {
-		this.form = this.$$('lb_bookCard');
+		this.form = this.$$('bookCardLibrarian');
 	}
 
 	showPopup(book) {
@@ -89,18 +109,18 @@ export default class BookCard extends JetView {
 	saveForm() {
 		const data = this.form.getValues();
 
-		const successAction = (message) => {
-			this.webix.message(message);
+		const successAction = () => {
+			this.webix.message('Success');
 			this.hideWindow();
 		};
 		
 		if(this.form.validate()) {
 			if(this.isNew) {
-				addItem(booksModel, data, successAction('Saved'));				
+				addItem(booksModel, data, successAction);				
 			}
 
 			else {
-				updateItem(booksModel, data, successAction('Updated'));
+				updateItem(booksModel, data, successAction);
 			}
 		}		
 	}

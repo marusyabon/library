@@ -1,7 +1,7 @@
 import { JetView } from 'webix-jet';
 import likesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
-import {dummyCover} from '../../consts'; 
+import {dummyCover, SUCCESS} from '../../consts'; 
 
 export default class BookCard extends JetView {
 	config() {
@@ -113,7 +113,7 @@ export default class BookCard extends JetView {
 		if(this.book.user_id == this.userId) {
 			likesModel.removeLike(userId, bookId).then((response) => {
 				const status = response.json().serverStatus;
-				if(status == 2) {
+				if(status == SUCCESS) {
 					this.unsetLike();
 				}
 			});
@@ -121,7 +121,7 @@ export default class BookCard extends JetView {
 		else{
 			likesModel.addLike(userId, bookId).then((response) => {
 				const status = response.json().serverStatus;
-				if(status == 2) {
+				if(status == SUCCESS) {
 					this.setLike();
 				}
 			});

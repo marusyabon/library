@@ -2,9 +2,9 @@ import { JetView } from 'webix-jet';
 import booksModel from '../../models/books';
 
 export default class Library extends JetView {
-	constructor(app, l_config, bookCard) {
+	constructor(app, libraryConfig, bookCard) {
 		super(app);
-		this.l_config = l_config;
+		this.libraryConfig = libraryConfig;
 		this.bookCard = bookCard;
 	}
 
@@ -90,22 +90,26 @@ export default class Library extends JetView {
 	}
 
 	init() {
-		const grid = $$('dt_library');
-		//switch
-		if (this.l_config.role === 'reader') {
-			grid.getColumnConfig('editCol').hidden = true;
-			grid.getColumnConfig('removeCol').hidden = true;
-			grid.refreshColumns();
+		this.grid = $$('dt_library');
+
+		switch (this.libraryConfig.role) {
+			case 'reader': {
+				this.grid.getColumnConfig('editCol').hidden = true;
+				this.grid.getColumnConfig('removeCol').hidden = true;
+			}
+				break;
+			case 'librarian': {
+				this.grid.getColumnConfig('viewCol').hidden = true;
+			}
+				break;
 		}
-		else if (this.l_config.role === 'librarian') {
-			grid.getColumnConfig('viewCol').hidden = true;
-			grid.refreshColumns();
-		}
+		this.grid.refreshColumns();
+
 
 		booksModel.getDataFromServer().then((dbData) => {
 			const booksArr = dbData.json();
 
-			$$('dt_library').parse(booksArr);
+			this.grid.parse(booksArr);
 			this.booksArr = booksArr;
 		});
 
@@ -119,6 +123,6 @@ export default class Library extends JetView {
 
 	removeBook(id) {
 		booksModel.removeItem(id);
-		return $$('dt_library').remove(id);
+		return this.grid.remove(id);
 	}
 }
