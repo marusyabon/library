@@ -1,15 +1,35 @@
 {
   "name": "library",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "express": "^4.17.1"
-  },
-  "devDependencies": {},
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon -r esm ./bin/www"
   },
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "eslint": "^6.0.1",
+    "esm": "^3.2.25",
+    "express": "^4.16.4",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.18.1",
+    "morgan": "~1.9.1",
+    "mysql": "^2.17.1",
+    "mysql2": "^1.6.5",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "babel-cli": "^6.26.0",
+    "nodemon": "^1.19.1",
+    "path": "^0.12.7"
+  }
 }
