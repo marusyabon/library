@@ -1,5 +1,5 @@
 import { JetView } from 'webix-jet';
-import BooksModel from '../../models/books';
+import booksModel from '../../models/books';
 
 export default class Library extends JetView {
 	constructor(app, l_config, bookCard) {
@@ -91,7 +91,7 @@ export default class Library extends JetView {
 
 	init() {
 		const grid = $$('dt_library');
-		
+		//switch
 		if (this.l_config.role === 'reader') {
 			grid.getColumnConfig('editCol').hidden = true;
 			grid.getColumnConfig('removeCol').hidden = true;
@@ -102,7 +102,7 @@ export default class Library extends JetView {
 			grid.refreshColumns();
 		}
 
-		BooksModel.getDataFromServer().then((dbData) => {
+		booksModel.getDataFromServer().then((dbData) => {
 			const booksArr = dbData.json();
 
 			$$('dt_library').parse(booksArr);
@@ -118,7 +118,7 @@ export default class Library extends JetView {
 	}
 
 	removeBook(id) {
-		BooksModel.removeItem(id);
+		booksModel.removeItem(id);
 		return $$('dt_library').remove(id);
 	}
 }

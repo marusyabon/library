@@ -1,6 +1,6 @@
 import {JetView} from 'webix-jet';
 import Authorization from '../../authorization';
-import UsersModel from '../../models/users';
+import usersModel from '../../models/users';
 import UserForm from './userForm';
 
 export default class TopView extends JetView{
@@ -106,7 +106,7 @@ export default class TopView extends JetView{
 	}
 
 	init() {
-		UsersModel.getDataFromServer().then((dbData) => {
+		usersModel.getDataFromServer().then((dbData) => {
 			let usersArr = dbData.json();
 			usersArr = usersArr.map((el) => {
 				el.full_name = el.user_name + ' ' + el.user_surname;

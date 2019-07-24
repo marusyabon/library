@@ -1,5 +1,5 @@
 import { JetView } from 'webix-jet';
-import UsersModel from '../../models/users';
+import usersModel from '../../models/users';
 import {updateItem} from '../../scripts'; 
 
 
@@ -40,7 +40,7 @@ export default class Settings extends JetView {
 	init() {
 		const id = this.getParam("id", true);
 
-		UsersModel.getItem(id).then((data) => {
+		usersModel.getItem(id).then((data) => {
 			const userData = data.json()[0];
 			userData.birth_date = new Date (userData.birth_date);
 			this.$$('userDataForm').setValues(userData);
@@ -50,6 +50,6 @@ export default class Settings extends JetView {
 	saveForm () {
 		const data = this.$$('userDataForm').getValues();
 		const successAction = this.webix.message('New data saved');
-		updateItem(UsersModel, data, successAction);
+		updateItem(usersModel, data, successAction);
 	}
 }

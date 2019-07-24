@@ -1,5 +1,6 @@
 import { JetView } from 'webix-jet';
-import BooksModel from '../../models/books';
+import booksModel from '../../models/books';
+import FilesModel from '../../models/files';
 import { dummyCover } from '../../consts';
 import {addItem, updateItem} from '../../scripts'; 
 
@@ -28,7 +29,8 @@ export default class BookCard extends JetView {
 				{ view: 'text', label: 'Country', labelWidth: 130, width: 310, labelAlign: 'right', name: 'country_of_publication' },
 				{ view: 'text', label: 'Publishing house', labelWidth: 130, width: 310, labelAlign: 'right', name: 'publishing_house' },
 				{ view: 'text', label: 'Available copies', labelWidth: 130, width: 310, labelAlign: 'right', name: 'available_copies' },
-				{ view: 'text', label: 'Pages', labelWidth: 130, width: 310, labelAlign: 'right', name: 'number_of_pages' }
+				{ view: 'text', label: 'Pages', labelWidth: 130, width: 310, labelAlign: 'right', name: 'number_of_pages' },
+				{ view: 'text', label: 'Cover photo', labelWidth: 130, width: 310, labelAlign: 'right', name: 'cover_photo' }
 			]
 		};
 
@@ -47,7 +49,8 @@ export default class BookCard extends JetView {
 			position: 'center',
 			body: {
 				rows: [
-					bookCover, bookCard,
+					bookCover, 
+					bookCard,
 					{
 						paddingY: 10,
 						paddingX: 15,
@@ -55,7 +58,8 @@ export default class BookCard extends JetView {
 						cols: [
 							{}, saveBtn, {}
 						]
-					}
+					},
+					addBookFile
 				]
 			}
 		};
@@ -92,11 +96,11 @@ export default class BookCard extends JetView {
 		
 		if(this.form.validate()) {
 			if(this.isNew) {
-				addItem(BooksModel, data, successAction('Saved'));				
+				addItem(booksModel, data, successAction('Saved'));				
 			}
 
 			else {
-				updateItem(BooksModel, data, successAction('Updated'));
+				updateItem(booksModel, data, successAction('Updated'));
 			}
 		}		
 	}

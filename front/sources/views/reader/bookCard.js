@@ -1,5 +1,5 @@
 import { JetView } from 'webix-jet';
-import LikesModel from '../../models/likes';
+import likesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
 import {dummyCover} from '../../consts'; 
 
@@ -82,6 +82,10 @@ export default class BookCard extends JetView {
 			}
 		};
 	}
+
+	init() {
+		this.likeButton = this.$$('likeButton');
+	}
 	
 	showPopup(book) {
 		this.book = book;
@@ -107,7 +111,7 @@ export default class BookCard extends JetView {
 		const bookId = this.bookId;
 
 		if(this.book.user_id == this.userId) {
-			LikesModel.removeLike(userId, bookId).then((response) => {
+			likesModel.removeLike(userId, bookId).then((response) => {
 				const status = response.json().serverStatus;
 				if(status == 2) {
 					this.unsetLike();
@@ -115,7 +119,7 @@ export default class BookCard extends JetView {
 			});
 		}
 		else{
-			LikesModel.addLike(userId, bookId).then((response) => {
+			likesModel.addLike(userId, bookId).then((response) => {
 				const status = response.json().serverStatus;
 				if(status == 2) {
 					this.setLike();
@@ -134,12 +138,12 @@ export default class BookCard extends JetView {
 	}
 
 	setLike() {
-		this.$$('likeButton').define('label', '<i class="fas fa-heart"></i>');
-		this.$$('likeButton').refresh();
+		this.likeButtone.define('label', '<i class="fas fa-heart"></i>');
+		this.likeButton.refresh();
 	}
 
 	unsetLike() {
-		this.$$('likeButton').define('label', '<i class="far fa-heart"></i>');
-		this.$$('likeButton').refresh();
+		this.likeButton.define('label', '<i class="far fa-heart"></i>');
+		this.likeButton.refresh();
 	}
 }

@@ -1,5 +1,5 @@
 import { JetView } from 'webix-jet';
-import UsersModel from '../../models/users';
+import usersModel from '../../models/users';
 import {toggleElement, addItem, updateItem} from '../../scripts'; 
 
 export default class UserForm extends JetView {
@@ -95,11 +95,11 @@ export default class UserForm extends JetView {
 		
 		if(this.form.validate()) {
 			if(this.isNew) {
-				addItem(UsersModel, data, successAction('Saved'));				
+				addItem(usersModel, data, successAction('Saved'));	
 			}
 
 			else {
-				updateItem(UsersModel, data, successAction('Updated'));
+				updateItem(usersModel, data, successAction('Updated'));
 			}
 		}		
 	}

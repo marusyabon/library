@@ -34,7 +34,7 @@ router.delete('/', function (req, res) {
 				return res.send(results);
 			}
 			console.log(err);
-			res.status(304).send(err);
+			res.status(304).send(err);//errorHandler()
 		}
 	);
 });
