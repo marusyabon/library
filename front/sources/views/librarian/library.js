@@ -4,7 +4,9 @@ import BookCard from './bookCard';
 
 export default class libLibrary extends JetView {
 	config() {
-		const l_config = {
+		
+
+		const libraryConfig = {
 			role: 'librarian'
 		};
 
@@ -14,25 +16,17 @@ export default class libLibrary extends JetView {
 			type: 'form',
 			width: 100,
 			click: () => {
-				this.addBook();
+				library.addBook();
 			}
 		};
-
+		const library = new Library(this.app, libraryConfig, BookCard);
 		return {
 			rows: [
-				new Library(this.app, l_config, BookCard),
+				library,
 				{
 					cols: [{},addBookBtn,{}]
 				}				
 			]
 		};
-	}
-
-	init() {
-		this._bookCard = this.ui(BookCard);
-	}
-
-	addBook() {
-		this._bookCard.showPopup();
 	}
 }

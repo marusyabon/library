@@ -2,7 +2,8 @@ import { JetView } from 'webix-jet';
 import booksModel from '../../models/books';
 import FilesModel from '../../models/files';
 import { dummyCover } from '../../consts';
-import {addItem, updateItem} from '../../scripts'; 
+import { addItem, updateItem } from '../../scripts'; 
+import files from '../../models/files';
 
 export default class BookCard extends JetView {
 	config() {
@@ -17,29 +18,10 @@ export default class BookCard extends JetView {
 			}
 		};
 
-		const addBookFile = {
-			view: 'uploader',
-			label: '<i class="fas fa-file-upload"></i> Upload text file',
-			localId: 'bookFile',
-			type: 'htmlbutton',
-			width: 150,
-			upload: 'http://localhost:3000/files/upload',
-			on: {
-				'onFileUpload': (file, response) => {
-					if (response.status == "server") {
-						file.book_id = this.bookId;
-						FilesModel.addItem(file);
-					}
-				},
-				'onFileUploadError': () => {
-					webix.message('Uploading failed');
-				}
-			}
-		};
-
 		const bookCard = {
 			localId: 'bookCardLibrarian',
 			view: 'form',
+			borderless: true,
 			elements: [
 				{ view: 'text', label: 'Title', labelWidth: 130, width: 310, labelAlign: 'right', name: 'book_title' },
 				{ view: 'text', label: 'Author', labelWidth: 130, width: 310, labelAlign: 'right', name: 'author_name' },
@@ -52,6 +34,64 @@ export default class BookCard extends JetView {
 				{ view: 'text', label: 'Pages', labelWidth: 130, width: 310, labelAlign: 'right', name: 'number_of_pages' },
 				{ view: 'text', label: 'Cover photo', labelWidth: 130, width: 310, labelAlign: 'right', name: 'cover_photo' }
 			]
+		};
+
+		const addTextFile = {
+			view: 'uploader',
+			label: '<i class="fas fa-file-upload"></i> Upload text file',
+			localId: 'bookFile',
+			type: 'htmlbutton',
+			autosend: false,
+			width: 150,
+			formData: () => {
+				return {
+					user_id: this.userId,
+					book_id: this.bookId
+				};
+			},
+			accept: 'text/plain, application/pdf, .doc, .docx',
+			upload: 'http://localhost:3000/files/upload/text',
+			link: 'filesList'
+		};
+
+		const filesList = {
+			view: 'list',
+			type: 'uploader',
+			id: 'filesList',
+			autoheight:true, 
+			borderless:true
+		};
+
+		const addAudioFile = {
+			view: 'uploader',
+			label: '<i class="fas fa-music"></i> Upload audio',
+			localId: 'bookFile',
+			type: 'htmlbutton',
+			// autosend: false,
+			width: 150,
+			accept: '.mp3',
+			upload: 'http://localhost:3000/files/upload/audio',
+			link: 'audioList',
+			on: {
+				'onAfterFileAdd': (file) => {
+					console.log('file')
+					// if (response.status == "server") {
+					// 	file.book_id = this.bookId;
+					// 	FilesModel.addItem(file);
+					// }
+				},
+				'onFileUploadError': () => {
+					webix.message('Uploading failed');
+				}
+			}
+		};
+
+		const audioList = {
+			view: 'list',
+			type: 'uploader',
+			id: 'audioList',
+			autoheight:true, 
+			borderless:true
 		};
 
 		const saveBtn = {
@@ -71,15 +111,18 @@ export default class BookCard extends JetView {
 				rows: [
 					bookCover, 
 					bookCard,
+					filesList,
+					{ cols: [{}, addTextFile, {}] },
+					audioList,
+					{ cols: [{}, addAudioFile, {}] },
+					{height: 1},
 					{
 						paddingY: 10,
 						paddingX: 15,
 						margin: 10,
-						cols: [
-							{}, saveBtn, {}
-						]
-					},
-					addBookFile
+						borderless: true,
+						cols: [{}, saveBtn, {}]
+					}
 				]
 			}
 		};
@@ -91,6 +134,7 @@ export default class BookCard extends JetView {
 
 	showPopup(book) {
 		this.isNew = book ? false : true;
+		this.bookId = book.id;
 
 		if(this.isNew) {
 			this.$$('bookCover').hide();
@@ -98,6 +142,7 @@ export default class BookCard extends JetView {
 		else {
 			this.book = book;
 			this.bookId = book.id;
+			this.userId = book.user_id;
 
 			this.form.setValues(book);
 			this.$$('bookCover').setValues(book.cover_photo || dummyCover);			
@@ -113,7 +158,7 @@ export default class BookCard extends JetView {
 			this.webix.message('Success');
 			this.hideWindow();
 		};
-		
+
 		if(this.form.validate()) {
 			if(this.isNew) {
 				addItem(booksModel, data, successAction);				
@@ -122,6 +167,14 @@ export default class BookCard extends JetView {
 			else {
 				updateItem(booksModel, data, successAction);
 			}
+
+			const fileUploader = this.$$('bookFile');
+
+			fileUploader.send((response) => {
+				if(response){
+					this.webix.message(response.message);
+				}
+			});
 		}		
 	}
 

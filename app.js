@@ -13,16 +13,18 @@ import loginRouter from './routes/login';
 import logoutRouter from './routes/logout';
 import likesRouter from './routes/likes';
 import filesRouter from './routes/files';
+import fileUpload from 'express-fileupload';
 import './config/passport';
 
 const app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-// app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());	
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(fileUpload());
  
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

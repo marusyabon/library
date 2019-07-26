@@ -125,4 +125,8 @@ export default class Library extends JetView {
 		booksModel.removeItem(id);
 		return this.grid.remove(id);
 	}
+
+	addBook() {
+		this._bookCard.showPopup();
+	}
 }
