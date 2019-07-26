@@ -1,9 +1,7 @@
 import { JetView } from 'webix-jet';
 import booksModel from '../../models/books';
-import FilesModel from '../../models/files';
 import { dummyCover } from '../../consts';
 import { addItem, updateItem } from '../../scripts'; 
-import files from '../../models/files';
 
 export default class BookCard extends JetView {
 	config() {
