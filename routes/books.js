@@ -4,7 +4,6 @@ import mysql from 'mysql2';
 
 const router = Router();
 
-/* GET users listing. */
 router.get('/', function (req, res) {
 	connection.query('SELECT books.*, likes.user_id from `books` LEFT JOIN `likes` ON `id` = `book_id`',
 		function (err, results) {

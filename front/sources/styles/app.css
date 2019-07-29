@@ -87,3 +87,7 @@
 .like_button:hover .fa-heart {
     font-weight: 600;
 }
+
+.list_button {
+    float: right;
+}

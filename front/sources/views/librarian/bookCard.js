@@ -1,7 +1,8 @@
 import { JetView } from 'webix-jet';
 import booksModel from '../../models/books';
 import { dummyCover } from '../../consts';
-import { addItem, updateItem } from '../../scripts'; 
+import { toggleElement, addItem, updateItem } from '../../scripts'; 
+import filesModel from '../../models/files';
 
 export default class BookCard extends JetView {
 	config() {
@@ -92,6 +93,20 @@ export default class BookCard extends JetView {
 			borderless:true
 		};
 
+		const availableTextFiles = {
+			view: 'activeList',
+			localId: 'availableTextFiles',
+			template: "#name#" +
+					"<span class='list_button'><i class = 'fas fa-times'></i></span>",
+		};
+
+		const availableAudioFiles = {
+			view: "activeList",
+			localId: "availableAudioFiles",
+			template: "#name#" +
+					"<span class='list_button download'><i class='fas fa-file-download'></i></span>",
+		};
+
 		const saveBtn = {
 			view: 'button',
 			type: 'form',
@@ -105,23 +120,32 @@ export default class BookCard extends JetView {
 		return {
 			view: 'popup',
 			position: 'center',
+			maxHeight: 550,
 			body: {
-				rows: [
-					bookCover, 
-					bookCard,
-					filesList,
-					{ cols: [{}, addTextFile, {}] },
-					audioList,
-					{ cols: [{}, addAudioFile, {}] },
-					{height: 1},
-					{
-						paddingY: 10,
-						paddingX: 15,
-						margin: 10,
-						borderless: true,
-						cols: [{}, saveBtn, {}]
-					}
-				]
+				view: 'scrollview',
+				body: {
+					rows: [
+						bookCover, 
+						bookCard,
+						availableTextFiles,
+						availableAudioFiles,
+						filesList,
+						audioList,
+						{ 
+							localId: 'addingFilesButtons',
+							margin: 10,
+							cols: [ {}, addTextFile, addAudioFile, {} ] 
+						},
+						{height: 1},
+						{
+							paddingY: 10,
+							paddingX: 15,
+							margin: 10,
+							borderless: true,
+							cols: [{}, saveBtn, {}]
+						}
+					]
+				}				
 			}
 		};
 	}
@@ -131,17 +155,21 @@ export default class BookCard extends JetView {
 	}
 
 	showPopup(book) {
+		filesModel.getDataFromServer().then((dbData) => {
+			const filesArr = dbData.json();
+			this.$$('availableTextFiles').parse(filesArr);
+		});
+
+		this.clearForm();
 		this.isNew = book ? false : true;
-		this.bookId = book.id;
+		this.book = book ? book : '';
+		this.bookId = book ? book.id : '';
+		this.userId = book ? book.user_id : '';
 
-		if(this.isNew) {
-			this.$$('bookCover').hide();
-		}
-		else {
-			this.book = book;
-			this.bookId = book.id;
-			this.userId = book.user_id;
+		toggleElement(!this.isNew, this.$$('bookCover'));
+		toggleElement(!this.isNew, this.$$('addingFilesButtons'));
 
+		if(!this.isNew) {
 			this.form.setValues(book);
 			this.$$('bookCover').setValues(book.cover_photo || dummyCover);			
 		}		
@@ -177,8 +205,12 @@ export default class BookCard extends JetView {
 	}
 
 	hideWindow() {
+		this.clearForm();
+		this.getRoot().hide();
+	}
+
+	clearForm (){
 		this.form.clearValidation();
 		this.form.clear();
-		this.getRoot().hide();
 	}
 }

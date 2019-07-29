@@ -5,6 +5,17 @@ import path from 'path';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+	connection.query('SELECT * FROM `files`',
+		function (err, results) {
+			if(!err) {
+				return res.send(results);
+			}
+			res.status(304);
+		}
+	);	
+});
+
 router.post('/', (req, res) => {
 	const file = req.body;
 
