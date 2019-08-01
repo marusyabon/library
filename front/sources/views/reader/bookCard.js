@@ -51,7 +51,14 @@ export default class BookCard extends JetView {
 			view: "activeList",
 			localId: "availableAudioFiles",
 			template: "#name#" +
-					"<span class='list_button download'><i class='fas fa-file-download'></i></span>",
+					"<span class='list_button download'><i class='far fa-play-circle'></i></span>",
+			on: {
+				onItemClick: (id) => {
+					// filesModel.downloadItem(id).then((res) => {
+					console.log('play', id);
+					// });
+				}
+			}
 		};
 
 		const orderBook = {
@@ -93,7 +100,7 @@ export default class BookCard extends JetView {
 			position:'center',
 			body:{
 				rows: [
-					bookCover, bookCard, availableTextFiles,
+					bookCover, bookCard, availableTextFiles, availableAudioFiles,
 					{
 						paddingY: 10,
 						paddingX: 15,
@@ -121,9 +128,21 @@ export default class BookCard extends JetView {
 
 		filesModel.getItems(this.bookId).then((dbData) => {
 			const filesArr = dbData.json();
-			this.$$('availableTextFiles').parse(filesArr);
-		});
 
+			const textFiles = [];
+			const audioFiles = [];
+
+			filesArr.forEach((file) => {
+				switch(file.data_type) {
+					case 'text': textFiles.push(file);
+						break;
+					case 'audio': audioFiles.push(file);
+						break;
+				}
+			});
+			this.$$('availableTextFiles').parse(textFiles);
+			this.$$('availableAudioFiles').parse(audioFiles);
+		});
 		toggleElement(book.book_file, this.$$('downloadBook'));
 		toggleElement(book.available_copies, this.$$('orderBook'));
 		this.toggleLike(book.user_id == this.userId);
