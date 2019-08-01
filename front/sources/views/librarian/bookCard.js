@@ -38,7 +38,7 @@ export default class BookCard extends JetView {
 		const addTextFile = {
 			view: 'uploader',
 			label: '<i class="fas fa-file-upload"></i> Upload text file',
-			localId: 'bookFile',
+			localId: 'bookFiles',
 			type: 'htmlbutton',
 			autosend: false,
 			width: 150,
@@ -64,25 +64,19 @@ export default class BookCard extends JetView {
 		const addAudioFile = {
 			view: 'uploader',
 			label: '<i class="fas fa-music"></i> Upload audio',
-			localId: 'bookFile',
+			localId: 'audioFiles',
 			type: 'htmlbutton',
-			// autosend: false,
+			autosend: false,
 			width: 150,
+			formData: () => {
+				return {
+					user_id: this.userId,
+					book_id: this.bookId
+				};
+			},
 			accept: '.mp3',
 			upload: 'http://localhost:3000/files/upload/audio',
-			link: 'audioList',
-			on: {
-				'onAfterFileAdd': (file) => {
-					console.log('file')
-					// if (response.status == "server") {
-					// 	file.book_id = this.bookId;
-					// 	FilesModel.addItem(file);
-					// }
-				},
-				'onFileUploadError': () => {
-					webix.message('Uploading failed');
-				}
-			}
+			link: 'audioList'
 		};
 
 		const audioList = {
@@ -98,13 +92,19 @@ export default class BookCard extends JetView {
 			localId: 'availableTextFiles',
 			template: "#name#" +
 					"<span class='list_button'><i class = 'fas fa-times'></i></span>",
+			on: {
+				onItemClick: (id) => {
+					//remove file and record in DB
+					console.log('remove: ', id);
+				}
+			}
 		};
 
 		const availableAudioFiles = {
 			view: "activeList",
 			localId: "availableAudioFiles",
 			template: "#name#" +
-					"<span class='list_button download'><i class='fas fa-file-download'></i></span>",
+					"<span class='list_button'><i class = 'fas fa-times'></i></span>",
 		};
 
 		const saveBtn = {
@@ -127,10 +127,18 @@ export default class BookCard extends JetView {
 					rows: [
 						bookCover, 
 						bookCard,
+						{
+							view: 'template',
+							template: 'Files',
+							autoheight: true,
+							css: 'center'
+						},
+						{height: 2	},
 						availableTextFiles,
 						availableAudioFiles,
 						filesList,
 						audioList,
+						{height: 15},
 						{ 
 							localId: 'addingFilesButtons',
 							margin: 10,
@@ -155,16 +163,29 @@ export default class BookCard extends JetView {
 	}
 
 	showPopup(book) {
-		filesModel.getDataFromServer().then((dbData) => {
-			const filesArr = dbData.json();
-			this.$$('availableTextFiles').parse(filesArr);
-		});
-
 		this.clearForm();
 		this.isNew = book ? false : true;
 		this.book = book ? book : '';
 		this.bookId = book ? book.id : '';
-		this.userId = book ? book.user_id : '';
+		this.userId = this.getParam("id", true);
+
+		filesModel.getItems(this.bookId).then((dbData) => {
+			const filesArr = dbData.json();
+
+			const textFiles = [];
+			const audioFiles = [];
+
+			filesArr.forEach((file) => {
+				switch(file.data_type) {
+					case 'text': textFiles.push(file);
+						break;
+					case 'audio': audioFiles.push(file);
+						break;
+				}
+			});
+			this.$$('availableTextFiles').parse(textFiles);
+			this.$$('availableAudioFiles').parse(audioFiles);
+		});
 
 		toggleElement(!this.isNew, this.$$('bookCover'));
 		toggleElement(!this.isNew, this.$$('addingFilesButtons'));
@@ -194,9 +215,13 @@ export default class BookCard extends JetView {
 				updateItem(booksModel, data, successAction);
 			}
 
-			const fileUploader = this.$$('bookFile');
+			this.$$('bookFiles').send((response) => {
+				if(response){
+					this.webix.message(response.message);
+				}
+			});
 
-			fileUploader.send((response) => {
+			this.$$('audioFiles').send((response) => {
 				if(response){
 					this.webix.message(response.message);
 				}
@@ -212,5 +237,7 @@ export default class BookCard extends JetView {
 	clearForm (){
 		this.form.clearValidation();
 		this.form.clear();
+		this.$$('bookFiles').files.clearAll();
+		this.$$('audioFiles').files.clearAll();
 	}
 }

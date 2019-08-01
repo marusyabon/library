@@ -38,11 +38,6 @@ webix.protoUI({
 		borderless: true,
 		type: {
 			height: 30
-		},
-		on: {
-			onItemClick: (id) => {
-				var item = this.getItem(id);
-			}
 		}
 	}
 }, webix.ui.list);

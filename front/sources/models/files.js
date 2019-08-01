@@ -7,7 +7,7 @@ class FilesModel {
 		return webix.ajax().get(this._url);
 	}
 	
-	getItem(id) {
+	getItems(id) {
 		return webix.ajax().get(`${this._url}${id}`);	
 	}
 
@@ -17,6 +17,10 @@ class FilesModel {
 
 	updateItem(data) {
 		return webix.ajax().put(this._url, data);
+	}
+
+	downloadItem(id) {
+		return webix.ajax().response('blob').get(`${this._url}download/${id}`);	
 	}
 }
 
