@@ -183,7 +183,7 @@ export default class BookCard extends JetView {
 	}
 
 	setLike() {
-		this.likeButtone.define('label', '<i class="fas fa-heart"></i>');
+		this.likeButton.define('label', '<i class="fas fa-heart"></i>');
 		this.likeButton.refresh();
 	}
 

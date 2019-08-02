@@ -5,12 +5,22 @@ import mysql from 'mysql2';
 const router = Router();
 
 router.get('/', function (req, res) {
-	connection.query('SELECT books.*, likes.user_id from `books` LEFT JOIN `likes` ON `id` = `book_id`',
+	const user_id = req.query.user_id;
+
+	connection.query('SELECT * FROM books LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` AND `likes`.`user_id` = ?', [user_id],
+	// connection.query('SELECT books.*, likes.user_id, COUNT(likes.user_id) AS num_likes FROM `books` LEFT JOIN `likes` ON `likes`.`book_id` = `books`.`id` AND `likes`.`user_id` = ?', [user_id],
+	// connection.query('SELECT * FROM books LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` AND `likes`.`user_id` = ? LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` COUNT(likes.user_id) AS num_likes', [user_id],
+	// connection.query('SELECT * FROM books LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` AND `likes`.`user_id` = ? GROUP BY `books`.`id`', [user_id],
 		function (err, results) {
+			console.log(results)
 			if(!err) {
-				return res.send(results);
+				console.log(results);
+				res.status(200).send(results);
 			}
-			res.status(304);
+			else {
+				console.log(err);
+				// res.status(304);
+			}			
 		}
 	);	
 });
@@ -31,7 +41,7 @@ router.post('/', function (req, res, next) {
 	connection.query(query,
 		function (err, results) {
 			if (!err) {
-				res.send(results);
+				res.status(200).send(results);
 			}
 			else {
 				console.log(err);
@@ -76,10 +86,13 @@ router.delete('/', function (req, res) {
 		query,
 		function (err, results) {
 			if (!err) {
-				return res.send(results);
+				res.send(results);
 			}
-			console.log(err);
-			res.status(304).send(err);
+			else {
+				console.log(err);
+				res.status(304).send(err);
+			}
+			
 		}
 	);
 });

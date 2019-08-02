@@ -105,8 +105,8 @@ export default class Library extends JetView {
 		}
 		this.grid.refreshColumns();
 
-
-		booksModel.getDataFromServer().then((dbData) => {
+		const user_id = this.getParam("id", true);
+		booksModel.getDataFromServer(user_id).then((dbData) => {
 			const booksArr = dbData.json();
 
 			this.grid.parse(booksArr);

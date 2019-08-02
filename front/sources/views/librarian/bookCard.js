@@ -239,5 +239,7 @@ export default class BookCard extends JetView {
 		this.form.clear();
 		this.$$('bookFiles').files.clearAll();
 		this.$$('audioFiles').files.clearAll();
+		this.$$('availableTextFiles').clearAll();
+		this.$$('availableAudioFiles').clearAll();
 	}
 }
