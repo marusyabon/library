@@ -7,12 +7,9 @@ const router = Router();
 router.get('/', function (req, res) {
 	const user_id = req.query.user_id;
 
-	connection.query('SELECT * FROM books LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` AND `likes`.`user_id` = ?', [user_id],
-	// connection.query('SELECT books.*, likes.user_id, COUNT(likes.user_id) AS num_likes FROM `books` LEFT JOIN `likes` ON `likes`.`book_id` = `books`.`id` AND `likes`.`user_id` = ?', [user_id],
-	// connection.query('SELECT * FROM books LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` AND `likes`.`user_id` = ? LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` COUNT(likes.user_id) AS num_likes', [user_id],
-	// connection.query('SELECT * FROM books LEFT OUTER JOIN `likes` ON `books`.`id` = `likes`.`book_id` AND `likes`.`user_id` = ? GROUP BY `books`.`id`', [user_id],
+	connection.query('SELECT *, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ?', [user_id],
 		function (err, results) {
-			console.log(results)
+			console.log(results);
 			if(!err) {
 				console.log(results);
 				res.status(200).send(results);

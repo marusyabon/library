@@ -86,10 +86,10 @@ export default class BookCard extends JetView {
 		const likeBook = {
 			view: 'button',
 			localId: 'likeButton',
-			type: 'htmlbutton',
 			css: 'like_button',
-			label: '<i class="far fa-heart"></i>',
-			width: 25,
+			type: 'icon', 
+			icon: 'far fa-heart',
+			width: 45,
 			click: () => { 
 				this.likeBook();
 			}
@@ -125,6 +125,7 @@ export default class BookCard extends JetView {
 		this.clearForm();
 		this.form.setValues(book);
 		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
+		this.likeButton.define('badge', book.count_likes || '0');
 
 		filesModel.getItems(this.bookId).then((dbData) => {
 			const filesArr = dbData.json();
@@ -183,12 +184,12 @@ export default class BookCard extends JetView {
 	}
 
 	setLike() {
-		this.likeButton.define('label', '<i class="fas fa-heart"></i>');
+		this.likeButton.define('icon', 'fas fa-heart');
 		this.likeButton.refresh();
 	}
 
 	unsetLike() {
-		this.likeButton.define('label', '<i class="far fa-heart"></i>');
+		this.likeButton.define('icon', 'far fa-heart');
 		this.likeButton.refresh();
 	}
 
