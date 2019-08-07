@@ -28,20 +28,35 @@ export default class Library extends JetView {
 					id: 'book_title',
 					sort: 'text',
 					fillspace: 1,
-					header: 'Title'
+					header: ['Title', {content: 'textFilter'}]
 				},
 				{
 					id: 'author_name',
 					sort: 'text',
 					fillspace: 1,
-					header: 'Author'
+					header: ['Author', {content: 'textFilter'}]
 				},
 				{
 					id: 'genres',
 					sort: 'text',
 					width: 80,
 					css: 'center',
-					header: 'Genres'
+					header: ['Genres', {content: 'selectFilter'}]
+				},
+				{
+					id: 'country_of_publication',
+					sort: 'text',
+					width: 80,
+					css: 'center',
+					header: ['Country', {content: 'selectFilter'}]
+				},
+				{
+					id: 'year_of_publication',
+					sort: 'date',
+					width: 80,
+					css: 'center',
+					format: webix.Date.dateToStr("%Ym"),
+					header: ['Year', {content: 'dateRangeFilter'}]
 				},
 				{
 					id: 'available_copies',
@@ -107,7 +122,12 @@ export default class Library extends JetView {
 
 		const user_id = this.getParam("id", true);
 		booksModel.getDataFromServer(user_id).then((dbData) => {
-			const booksArr = dbData.json();
+			let booksArr = dbData.json();
+
+			booksArr = booksArr.map((el) => {
+				el.year_of_publication = new Date(el.year_of_publication);
+				return el;
+			});
 
 			this.grid.parse(booksArr);
 			this.booksArr = booksArr;
