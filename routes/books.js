@@ -9,14 +9,12 @@ router.get('/', function (req, res) {
 
 	connection.query('SELECT *, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ?', [user_id],
 		function (err, results) {
-			console.log(results);
 			if(!err) {
-				console.log(results);
 				res.status(200).send(results);
 			}
 			else {
 				console.log(err);
-				// res.status(304);
+				res.status(500);
 			}			
 		}
 	);	
@@ -42,7 +40,7 @@ router.post('/', function (req, res, next) {
 			}
 			else {
 				console.log(err);
-				res.status(304);
+				res.status(500);
 			}
 		}
 	);
@@ -69,7 +67,7 @@ router.put('/', function (req, res, next) {
 			}
 			else {
 				console.log(err);
-				res.status(304);
+				res.status(500);
 			}
 		}
 	);
@@ -87,7 +85,7 @@ router.delete('/', function (req, res) {
 			}
 			else {
 				console.log(err);
-				res.status(304).send(err);
+				res.status(500).send(err);
 			}
 			
 		}

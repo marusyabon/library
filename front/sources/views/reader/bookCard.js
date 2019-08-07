@@ -50,15 +50,10 @@ export default class BookCard extends JetView {
 		const availableAudioFiles = {
 			view: "activeList",
 			localId: "availableAudioFiles",
-			template: "#name#" +
-					"<span class='list_button download'><i class='far fa-play-circle'></i></span>",
-			on: {
-				onItemClick: (id) => {
-					// filesModel.downloadItem(id).then((res) => {
-					console.log('play', id);
-					// });
-				}
-			}
+			type:{
+				height:100
+			},
+			template: "#name#<audio controls src='http://localhost:3000/audio/#id#'></audio>"
 		};
 
 		const orderBook = {
@@ -196,5 +191,7 @@ export default class BookCard extends JetView {
 	clearForm (){
 		this.form.clear();
 		this.filesList.clearAll();
+		this.$$('availableTextFiles').clearAll();
+		this.$$('availableAudioFiles').clearAll();
 	}
 }

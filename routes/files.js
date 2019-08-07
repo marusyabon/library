@@ -8,9 +8,11 @@ router.get('/', (req, res) => {
 	connection.query('SELECT * FROM `files`',
 		function (err, results) {
 			if(!err) {
-				return res.send(results);
+				res.send(results);
 			}
-			res.status(304);
+			else {
+				res.status(500);
+			}			
 		}
 	);	
 });
@@ -21,9 +23,11 @@ router.get('/:book_id', (req, res) => {
 	connection.query('SELECT * FROM `files` WHERE `book_id` = ?', [book_id],
 		function (err, results) {
 			if(!err) {
-				return res.send(results);
+				res.send(results);
 			}
-			res.status(304);
+			else {
+				res.status(500);
+			}
 		}
 	);	
 });
@@ -38,7 +42,7 @@ router.get('/download/:id', (req, res) => {
 				res.download(path.join(file.url, file.name));
 			}
 			else {
-				res.status(304);
+				res.status(500);
 			}			
 		}
 	);	
@@ -60,7 +64,7 @@ router.post('/', (req, res) => {
 			}
 			else {
 				console.log(err);
-				res.status(304);
+				res.status(500);
 			}
 		}
 	);
@@ -89,17 +93,20 @@ router.post('/upload/:datatype', (req, res) => {
 				query,
 				(err) => {
 					if (!err) {
-						return res.send({message: 'Success'});
+						res.send({message: 'Success'});
 					}
-					console.log(err);
-					return res.status(304);
+					else {
+						console.log(err);
+						res.status(500);
+					}
+
 				}
 			);
 
 		}
 		else {
 			console.log(err);
-			res.status(304);
+			res.status(500);
 		}
 	});
 });

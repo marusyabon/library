@@ -13,6 +13,7 @@ import loginRouter from './routes/login';
 import logoutRouter from './routes/logout';
 import likesRouter from './routes/likes';
 import filesRouter from './routes/files';
+import audioRouter from './routes/audio';
 import fileUpload from 'express-fileupload';
 import './config/passport';
 
@@ -35,6 +36,7 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/likes', likesRouter);
 app.use('/files', filesRouter);
+app.use('/audio', audioRouter);
 
 app.use(function (err, req, res, next) {
 	if (!err.statusCode) err.statusCode = 500;

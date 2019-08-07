@@ -51,7 +51,7 @@ router.post('/', (req, res) => {
 				}
 				else {
 					console.log(err);
-					res.status(304);
+					res.status(500);
 				}
 			}
 		);

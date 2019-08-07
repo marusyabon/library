@@ -10,30 +10,31 @@ router.post('/', (req, res, next) => {
 		{ session: false },
 		(error, user) => {
 			if (error || !user) {
-				return res.status(400).json({ error:error });
+				res.status(400).json({ error:error });
 			}
+			else {				
+				/** assigns payload to req.user */
+				req.login(user, { session: false }, (error) => {
 
-			/** assigns payload to req.user */
-			req.login(user, { session: false }, (error) => {
+					/** This is what ends up in our JWT */
+					const payload = {
+						id: user.id,
+						role: user.role_name,
+						email: user.email,
+						expires: Date.now() + 10800000,
+					};
 
-				/** This is what ends up in our JWT */
-				const payload = {
-					id: user.id,
-					role: user.role_name,
-					email: user.email,
-					expires: Date.now() + 10800000,
-				};
+					if (error) {
+						res.status(400).send({ error:error });
+					}
 
-				if (error) {
-					res.status(400).send({ error:error });
-				}
-
-				/** generate a signed json web token and return it in the response */
-				const token  = jwt.sign(JSON.stringify(payload), "your_jwt_secret");
-				/** assign our jwt to the cookie */
-				res.cookie('jwt', token, { maxAge: 900000 });
-				res.json({ success: true, user: user });
-			});
+					/** generate a signed json web token and return it in the response */
+					const token  = jwt.sign(JSON.stringify(payload), "your_jwt_secret");
+					/** assign our jwt to the cookie */
+					res.cookie('jwt', token, { maxAge: 900000 });
+					res.json({ success: true, user: user });
+				});
+			}
 		}
 	)(req, res, next);
 });
