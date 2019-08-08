@@ -4,13 +4,13 @@ import BookCard from './bookCard';
 
 export default class readerLibrary extends JetView {
 	config() {
-		const l_config = {
+		const libraryConfig = {
 			role: 'reader'
 		};
 
 		return {
 			rows: [
-				new Library(this.app, l_config, BookCard)
+				new Library(this.app, libraryConfig, BookCard)
 			]
 		};
 	}

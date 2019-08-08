@@ -88,18 +88,18 @@ export default class UserForm extends JetView {
 	saveForm() {
 		const data = this.form.getValues();
 
-		const successAction = (message) => {
-			this.webix.message(message);
+		const successAction = () => {
+			this.webix.message('Success');
 			this.hideWindow();
 		};
 		
 		if(this.form.validate()) {
 			if(this.isNew) {
-				addItem(usersModel, data, successAction('Saved'));	
+				addItem(usersModel, data, successAction);	
 			}
 
 			else {
-				updateItem(usersModel, data, successAction('Updated'));
+				updateItem(usersModel, data, successAction);
 			}
 		}		
 	}

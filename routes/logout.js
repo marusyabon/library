@@ -19,10 +19,12 @@ router.post('/', (req, res) => {
 				function (err, result) {
 					if (!err) {
 						res.clearCookie('jwt');
-						return res.send();
+						res.send();
 					}				
-					console.log(err);
-					res.status(304).send();	
+					else {
+						console.log(err);
+						res.status(500).send();	
+					}
 				}
 			);
 		}

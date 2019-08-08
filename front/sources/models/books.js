@@ -4,8 +4,9 @@ class BooksModel {
 		this._url = 'http://localhost:3000/books/';
 	}
 
-	getDataFromServer() {
-		return webix.ajax().get(this._url);
+	getDataFromServer(id) {
+		const user_id = {user_id: id};
+		return webix.ajax().get(this._url, user_id);
 	}
 
 	addItem(data) {

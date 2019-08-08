@@ -80,10 +80,15 @@
     background-size: cover;
 }
 
-.like_button .webixtype_base {
+.like_button .webix_img_btn {
     background-color: transparent;
+    text-align: left;
 }
 
 .like_button:hover .fa-heart {
     font-weight: 600;
+}
+
+.list_button {
+    float: right;
 }

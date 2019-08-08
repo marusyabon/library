@@ -14,10 +14,13 @@ router.post('/', function (req, res) {
 		query,
 		function (err, results) {
 			if (!err) {
-				return res.send(results);
+				res.send(results);
 			}
-			console.log(err);
-			res.status(304).send(err);
+			else {
+				console.log(err);
+				res.status(304).send(err);
+			}
+			
 		}
 	);
 });
@@ -31,10 +34,12 @@ router.delete('/', function (req, res) {
 		query,
 		function (err, results) {
 			if (!err) {
-				return res.send(results);
+				res.send(results);
 			}
-			console.log(err);
-			res.status(304).send(err);//errorHandler()
+			else {
+				console.log(err);
+				res.status(304).send(err);
+			}			
 		}
 	);
 });

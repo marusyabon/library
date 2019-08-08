@@ -1,4 +1,4 @@
-import {JetView, plugins} from 'webix-jet';
+import {JetView} from 'webix-jet';
 import Authorization from '../../authorization';
 
 export default class TopView extends JetView{
@@ -18,7 +18,7 @@ export default class TopView extends JetView{
 			value: 'main',
 			data:[
 				{ value:'Library', id:'library',  icon:'fas fa-book-reader' },
-				{ value:'Users', id:'users',  icon:'fas fa-cog' },
+				{ value:'Users', id:'users',  icon:'fas fa-cog' }
 			],
 			on:{
 				onMenuItemClick: (id) => {

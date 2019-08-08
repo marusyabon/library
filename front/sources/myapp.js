@@ -48,26 +48,8 @@ if (!BUILD_AS_MODULE){
 						}						
 					}
 				);
-
 			}
 		});
-		// app.attachEvent('app:guard', (url, view, nav) => {
-		// 	if(url.indexOf('index') !== -1) { 
-		// 		webix.ajax().get('http://localhost:3000/check').then(
-		// 			(res) => {
-		// 				const response = res.json();
-		// 				if (!response.allowAccess) {
-		// 					app.show('/login');
-		// 				}
-		// 			},
-		// 			(error) => {
-		// 				if(error.status == 401) {
-		// 					app.show('/login');
-		// 				}						
-		// 			}
-		// 		);
-		// 	}
-		// });
 
 		app.render();
 	});

@@ -4,14 +4,18 @@ import mysql from 'mysql2';
 
 const router = Router();
 
-/* GET users listing. */
 router.get('/', function (req, res) {
-	connection.query('SELECT books.*, likes.user_id from `books` LEFT JOIN `likes` ON `id` = `book_id`',
+	const user_id = req.query.user_id;
+
+	connection.query('SELECT *, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ?', [user_id],
 		function (err, results) {
 			if(!err) {
-				return res.send(results);
+				res.status(200).send(results);
 			}
-			res.status(304);
+			else {
+				console.log(err);
+				res.status(500);
+			}			
 		}
 	);	
 });
@@ -32,11 +36,11 @@ router.post('/', function (req, res, next) {
 	connection.query(query,
 		function (err, results) {
 			if (!err) {
-				res.send(results);
+				res.status(200).send(results);
 			}
 			else {
 				console.log(err);
-				res.status(304);
+				res.status(500);
 			}
 		}
 	);
@@ -63,7 +67,7 @@ router.put('/', function (req, res, next) {
 			}
 			else {
 				console.log(err);
-				res.status(304);
+				res.status(500);
 			}
 		}
 	);
@@ -77,10 +81,13 @@ router.delete('/', function (req, res) {
 		query,
 		function (err, results) {
 			if (!err) {
-				return res.send(results);
+				res.send(results);
 			}
-			console.log(err);
-			res.status(304).send(err);
+			else {
+				console.log(err);
+				res.status(500).send(err);
+			}
+			
 		}
 	);
 });

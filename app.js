@@ -13,16 +13,19 @@ import loginRouter from './routes/login';
 import logoutRouter from './routes/logout';
 import likesRouter from './routes/likes';
 import filesRouter from './routes/files';
+import audioRouter from './routes/audio';
+import fileUpload from 'express-fileupload';
 import './config/passport';
 
 const app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-// app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());	
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(fileUpload());
  
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -33,6 +36,7 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/likes', likesRouter);
 app.use('/files', filesRouter);
+app.use('/audio', audioRouter);
 
 app.use(function (err, req, res, next) {
 	if (!err.statusCode) err.statusCode = 500;

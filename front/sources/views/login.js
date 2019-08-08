@@ -50,23 +50,19 @@ export default class LoginPage extends JetView{
 			const authorization = new Authorization();
 
 			authorization.login(values).then((response) => {	
+
 				if (response) {
-					let token = response.json().token;
-					token = token.split(' ')[1];
-					const base64Url = token.split('.')[1];
-					const userData = JSON.parse(window.atob(base64Url));
-					this.app._userData = userData;
+					const userData = response.json().user;
 					const id = userData.id;
 
-					if(userData.role === 'admin') {
-						this.show(`admin.index?id=${id}`);
-					}					
-					if(userData.role === 'librarian') {
-						this.show(`librarian.index?id=${id}/librarian.library`);
-					}			
-					if(userData.role === 'reader') {
-						this.show(`reader.index?id=${id}/reader.main`);
-					}			
+					switch (userData.role_name) {
+						case 'admin': this.show(`admin.index?id=${id}`);
+							break;
+						case 'librarian': this.show(`librarian.index?id=${id}/librarian.library`);
+							break;
+						case 'reader': this.show(`reader.index?id=${id}/reader.main`);
+							break;
+					}
 				}
 				else {
 					webix.message(response);
