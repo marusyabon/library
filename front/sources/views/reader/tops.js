@@ -127,6 +127,7 @@ export default class bookTops extends JetView {
 
 	showRsults(data) {
 		data = data.slice(0, 10);
+		this.grid.clearAll();
 		this.grid.parse(data);
 		this.grid.show();
 	}
