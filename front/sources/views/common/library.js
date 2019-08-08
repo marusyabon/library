@@ -55,7 +55,7 @@ export default class Library extends JetView {
 					sort: 'date',
 					width: 80,
 					css: 'center',
-					format: webix.Date.dateToStr("%Ym"),
+					format: webix.Date.dateToStr("%Y"),
 					header: ['Year', {content: 'dateRangeFilter'}]
 				},
 				{

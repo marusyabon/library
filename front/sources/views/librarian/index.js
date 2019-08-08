@@ -18,7 +18,7 @@ export default class TopView extends JetView{
 			value: 'main',
 			data:[
 				{ value:'Library', id:'library',  icon:'fas fa-book-reader' },
-				{ value:'Users', id:'users',  icon:'fas fa-cog' },
+				{ value:'Users', id:'users',  icon:'fas fa-cog' }
 			],
 			on:{
 				onMenuItemClick: (id) => {
