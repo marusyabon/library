@@ -1,6 +1,6 @@
 import { JetView } from 'webix-jet';
 import booksModel from '../../models/books';
-import { dummyCover } from '../../consts';
+import { DUMMYCOVER } from '../../consts';
 import { toggleElement, addItem, updateItem } from '../../scripts'; 
 import filesModel from '../../models/files';
 
@@ -42,12 +42,10 @@ export default class BookCard extends JetView {
 			type: 'htmlbutton',
 			autosend: false,
 			width: 150,
-			formData: () => {
-				return {
-					user_id: this.userId,
-					book_id: this.bookId
-				};
-			},
+			formData: () => ({
+				user_id: this.userId,
+				book_id: this.bookId
+			}),
 			accept: 'text/plain, application/pdf, .doc, .docx',
 			upload: 'http://localhost:3000/files/upload/text',
 			link: 'filesList'
@@ -90,12 +88,10 @@ export default class BookCard extends JetView {
 		const availableTextFiles = {
 			view: 'activeList',
 			localId: 'availableTextFiles',
-			template: "#name#" +
-					"<span class='list_button'><i class = 'fas fa-times'></i></span>",
+			template: `#name# <span class='list_button'><i class = 'fas fa-times'></i></span>`,
 			on: {
 				onItemClick: (id) => {
 					//remove file and record in DB
-					console.log('remove: ', id);
 				}
 			}
 		};
@@ -133,7 +129,7 @@ export default class BookCard extends JetView {
 							autoheight: true,
 							css: 'center'
 						},
-						{height: 2	},
+						{height: 2},
 						availableTextFiles,
 						availableAudioFiles,
 						filesList,
@@ -165,7 +161,7 @@ export default class BookCard extends JetView {
 	showPopup(book) {
 		this.clearForm();
 		this.isNew = book ? false : true;
-		this.book = book ? book : '';
+		this.book = book || '';
 		this.bookId = book ? book.id : '';
 		this.userId = this.getParam("id", true);
 
@@ -177,9 +173,11 @@ export default class BookCard extends JetView {
 
 			filesArr.forEach((file) => {
 				switch(file.data_type) {
-					case 'text': textFiles.push(file);
+					case 'text':
+						textFiles.push(file);
 						break;
-					case 'audio': audioFiles.push(file);
+					case 'audio':
+						audioFiles.push(file);
 						break;
 				}
 			});
@@ -192,7 +190,7 @@ export default class BookCard extends JetView {
 
 		if(!this.isNew) {
 			this.form.setValues(book);
-			this.$$('bookCover').setValues(book.cover_photo || dummyCover);			
+			this.$$('bookCover').setValues(book.cover_photo || DUMMYCOVER);			
 		}		
 
 		this.getRoot().show();	

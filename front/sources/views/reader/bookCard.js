@@ -1,7 +1,7 @@
 import { JetView } from 'webix-jet';
 import likesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
-import {dummyCover, SUCCESS} from '../../consts'; 
+import {DUMMYCOVER, SUCCESS} from '../../consts'; 
 import filesModel from '../../models/files';
 
 export default class BookCard extends JetView {
@@ -119,7 +119,7 @@ export default class BookCard extends JetView {
 		
 		this.clearForm();
 		this.form.setValues(book);
-		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
+		this.$$('bookCover').setValues(book.cover_photo || DUMMYCOVER);
 		this.likeButton.define('badge', book.count_likes || '0');
 
 		filesModel.getItems(this.bookId).then((dbData) => {

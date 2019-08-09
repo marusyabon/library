@@ -108,18 +108,20 @@ export default class Library extends JetView {
 		this.grid = $$('dt_library');
 
 		switch (this.libraryConfig.role) {
-			case 'reader': {
+			case 'reader': 
 				this.grid.getColumnConfig('editCol').hidden = true;
 				this.grid.getColumnConfig('removeCol').hidden = true;
-			}
 				break;
-			case 'librarian': {
+			case 'librarian':
 				this.grid.getColumnConfig('viewCol').hidden = true;
-			}
 				break;
 		}
 		this.grid.refreshColumns();
+		this.getData();
+		this._bookCard = this.ui(this.bookCard);
+	}
 
+	getData() {		
 		const user_id = this.getParam("id", true);
 		booksModel.getDataFromServer(user_id).then((dbData) => {
 			let booksArr = dbData.json();
@@ -132,8 +134,6 @@ export default class Library extends JetView {
 			this.grid.parse(booksArr);
 			this.booksArr = booksArr;
 		});
-
-		this._bookCard = this.ui(this.bookCard);
 	}
 
 	showBookCard(id) {

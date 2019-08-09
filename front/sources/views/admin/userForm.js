@@ -67,6 +67,11 @@ export default class UserForm extends JetView {
 		this.window = this.$$('userWindow');
 	}
 
+	successAction() {
+		this.webix.message('Success');
+		this.hideWindow();
+	}
+
 	showWindow(user) {	
 		this.isNew = user ? false : true;	
 
@@ -86,20 +91,14 @@ export default class UserForm extends JetView {
 	}
 
 	saveForm() {
-		const data = this.form.getValues();
-
-		const successAction = () => {
-			this.webix.message('Success');
-			this.hideWindow();
-		};
+		const data = this.form.getValues();	
 		
 		if(this.form.validate()) {
 			if(this.isNew) {
-				addItem(usersModel, data, successAction);	
+				addItem(usersModel, data, this.successAction.bind(this));	
 			}
-
 			else {
-				updateItem(usersModel, data, successAction);
+				updateItem(usersModel, data, this.successAction.bind(this));
 			}
 		}		
 	}

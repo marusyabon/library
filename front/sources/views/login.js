@@ -50,17 +50,19 @@ export default class LoginPage extends JetView{
 			const authorization = new Authorization();
 
 			authorization.login(values).then((response) => {	
-
 				if (response) {
 					const userData = response.json().user;
 					const id = userData.id;
 
 					switch (userData.role_name) {
-						case 'admin': this.show(`admin.index?id=${id}`);
+						case 'admin': 
+							this.show(`admin.index?id=${id}`);
 							break;
-						case 'librarian': this.show(`librarian.index?id=${id}/librarian.library`);
+						case 'librarian': 
+							this.show(`librarian.index?id=${id}/librarian.library`);
 							break;
-						case 'reader': this.show(`reader.index?id=${id}/reader.main`);
+						case 'reader': 
+							this.show(`reader.index?id=${id}/reader.main`);
 							break;
 					}
 				}
