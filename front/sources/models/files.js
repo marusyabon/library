@@ -1,6 +1,8 @@
+import { URL } from '../consts';
+
 class FilesModel {
 	constructor() {
-		this._url = 'http://localhost:3000/files/';
+		this._url = `${URL}/files/`;
 	}
 
 	getDataFromServer() {

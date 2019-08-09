@@ -1,5 +1,6 @@
 import { JetView } from 'webix-jet';
 import booksModel from '../../models/books';
+import filesModel from '../../models/files';
 
 export default class Library extends JetView {
 	constructor(app, libraryConfig, bookCard) {
@@ -65,6 +66,14 @@ export default class Library extends JetView {
 					header: 'Available'
 				},
 				{
+					id: 'ebook',
+					header: ['eBook', {content:"selectFilter"}],
+					width: 70,
+					template: (obj) => {
+						return obj.ebook==='yes' ? '<i class="fas fa-check"></i>' : ''
+					}					
+				},
+				{
 					id: 'viewCol',
 					header: 'View',
 					css: 'center',
@@ -104,7 +113,7 @@ export default class Library extends JetView {
 		};
 	}
 
-	init() {
+	async init() {
 		this.grid = $$('dt_library');
 
 		switch (this.libraryConfig.role) {
@@ -117,22 +126,41 @@ export default class Library extends JetView {
 				break;
 		}
 		this.grid.refreshColumns();
-		this.getData();
+		await this.getData();
+		await this.getFiles();
+		this.checkFiles();		
+
+		this.grid.parse(this.booksArr);
 		this._bookCard = this.ui(this.bookCard);
 	}
 
-	getData() {		
+	async getData() {		
 		const user_id = this.getParam("id", true);
-		booksModel.getDataFromServer(user_id).then((dbData) => {
-			let booksArr = dbData.json();
+		const dbData = await booksModel.getDataFromServer(user_id);
+		let booksArr = dbData.json();
 
-			booksArr = booksArr.map((el) => {
-				el.year_of_publication = new Date(el.year_of_publication);
-				return el;
-			});
+		booksArr = booksArr.map((el) => {
+			el.year_of_publication = new Date(el.year_of_publication);
+			return el;
+		});
+		this.booksArr = booksArr;
+	}
 
-			this.grid.parse(booksArr);
-			this.booksArr = booksArr;
+	async getFiles() {
+		const dbData = await filesModel.getDataFromServer();
+		this.filesArr = dbData.json();						
+	}
+
+	checkFiles() {
+		this.booksArr.forEach((book, i) => {
+			const isFiles = this.filesArr.find((el) => el.book_id === book.id);
+			
+			if(isFiles) {
+				this.booksArr[i].ebook = 'yes';
+			}
+			else {
+				this.booksArr[i].ebook = 'no';
+			}
 		});
 	}
 
