@@ -1,6 +1,6 @@
 import { JetView } from 'webix-jet';
 import likesModel from '../../models/likes';
-import {toggleElement} from '../../scripts'; 
+import {toggleElement, formatDate} from '../../scripts'; 
 import {DUMMYCOVER, SUCCESS} from '../../consts'; 
 import filesModel from '../../models/files';
 import commentsModel from '../../models/comments';
@@ -94,8 +94,9 @@ export default class BookCard extends JetView {
 		const toggleCommentsBtn = {
 			view: 'button',
 			localId: 'commentButton',
-			value: 'Comments',
-			width: 100,
+			type: 'htmlbutton',
+			label: 'Comments <i class="fas fa-angle-down">',
+			width: 120,
 			click: () => { 
 				this.toggleComments();
 			}
@@ -141,6 +142,7 @@ export default class BookCard extends JetView {
 		this.likeButton = this.$$('likeButton');
 		this.form = this.$$('bookCardReader');
 		this.filesList = this.$$('availableTextFiles');
+		this.toggleCommentsBtn = this.$$('commentButton');
 		this.commentLayout = this.$$('commentLayout');
 		this.book = book;
 		this.bookId = book.id;
@@ -224,14 +226,33 @@ export default class BookCard extends JetView {
 		this.likeButton.refresh();
 	}
 
+
+	addChildComments(arr, item) {
+		let arrCopy = [...arr];
+
+		arr.forEach((el, i) => {
+			if (el.comment_id === item.id) {
+				const commentItem = this.composeComment(el);
+				$$(`comment_${item.id}`).addView(commentItem, 1);
+				arrCopy = arrCopy.splice(i, 1);
+
+				this.addChildComments(arrCopy, item);
+			}
+		});
+	}
+
 	getComments() {
 		this.commentsGot = true;
 		commentsModel.getItems(this.bookId).then((dbData) => {
 			const commentsArr = dbData.json();
 
-			commentsArr.forEach((comment) => {
+			commentsArr.forEach((comment, i) => {
 				const commentItem = this.composeComment(comment);
-				this.commentLayout.addView(commentItem);
+
+				if(!comment.comment_id) {
+					this.commentLayout.addView(commentItem, i);
+					this.addChildComments(commentsArr, comment);
+				}			
 			});
 		});
 	}
@@ -239,9 +260,11 @@ export default class BookCard extends JetView {
 	toggleComments() {
 		const isVisible = this.commentLayout.isVisible();
 		if(isVisible) {
+			this.toggleCommentsBtn.setValue('Comments <i class="fas fa-angle-down"></i>');
 			this.commentLayout.hide();
 		}
 		else {
+			this.toggleCommentsBtn.setValue('Comments <i class="fas fa-angle-up"></i>');
 			if(!this.commentsGot) {
 				this.getComments();
 			}
@@ -250,8 +273,24 @@ export default class BookCard extends JetView {
 	}
 
 	composeComment(comment) {
-		return `<div>${comment.commentDate}</div>\
-				<div>${comment.content}</div>`;
+		const commentDate = formatDate(comment.comment_date);
+		const commentAuthor = `${comment.user_name} ${comment.user_surname}`;
+
+		return {
+			id: `comment_${comment.id}`,
+			css: 'comment_item',
+			rows: [
+				{
+					autoheight: true,
+					template:  `<div class="comment_info">\
+									<div class = "comment_author">${commentAuthor}</div>\
+									<div class = "comment_date">${commentDate}</div>\
+								</div>
+								<div>${comment.content}</div>`
+				}
+			]
+			
+		};
 	}
 
 
@@ -260,5 +299,15 @@ export default class BookCard extends JetView {
 		this.filesList.clearAll();
 		this.$$('availableTextFiles').clearAll();
 		this.$$('availableAudioFiles').clearAll();
+
+		const comments = this.commentLayout.getChildViews();
+
+		if(comments) {
+			const commentsCopy = [...comments];
+
+			commentsCopy.forEach((comment) => {
+				this.commentLayout.removeView(comment);
+			});			
+		}
 	}
 }

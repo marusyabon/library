@@ -92,3 +92,14 @@
 .list_button {
     float: right;
 }
+
+.comment_item .comment_item {
+    padding-left: 20px;
+}
+
+.comment_info {
+    display: flex;
+    justify-content: space-between;
+    font-style: italic;
+    padding-bottom: 5px;
+}

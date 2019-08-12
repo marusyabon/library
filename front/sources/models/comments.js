@@ -2,11 +2,7 @@ import { URL } from '../consts';
 
 class CommentsModel {
 	constructor() {
-		this._url = `${URL}/files/`;
-	}
-
-	getDataFromServer() {
-		return webix.ajax().get(this._url);
+		this._url = `${URL}/comments/`;
 	}
 	
 	getItems(id) {
