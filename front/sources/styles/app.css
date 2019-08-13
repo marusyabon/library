@@ -93,10 +93,6 @@
     float: right;
 }
 
-.comment_item .comment_item {
-    padding-left: 20px;
-}
-
 .comment_info {
     display: flex;
     justify-content: space-between;

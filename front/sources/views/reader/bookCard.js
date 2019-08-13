@@ -121,19 +121,23 @@ export default class BookCard extends JetView {
 		return {
 			view: 'popup',
 			position:'center',
+			maxHeight: 550,
 			body:{
-				rows: [
-					bookCover, bookCard, availableTextFiles, availableAudioFiles,
-					{
-						paddingY: 10,
-						paddingX: 15,
-						margin: 10,
-						cols: [
-							orderBook, downloadBook, {}, likeBook
-						]
-					},
-					comments
-				] 
+				view: 'scrollview',
+				body: {
+					rows: [
+						bookCover, bookCard, availableTextFiles, availableAudioFiles,
+						{
+							paddingY: 10,
+							paddingX: 15,
+							margin: 10,
+							cols: [
+								orderBook, downloadBook, {}, likeBook
+							]
+						},
+						comments
+					] 
+				}
 			}
 		};
 	}
@@ -226,19 +230,23 @@ export default class BookCard extends JetView {
 		this.likeButton.refresh();
 	}
 
-
 	addChildComments(arr, item) {
-		let arrCopy = [...arr];
-
-		arr.forEach((el, i) => {
+		let i = 0;
+		debugger
+		while(i < arr.length) {
+			const el = arr[i];
 			if (el.comment_id === item.id) {
 				const commentItem = this.composeComment(el);
 				$$(`comment_${item.id}`).addView(commentItem, 1);
-				arrCopy = arrCopy.splice(i, 1);
+				arr.splice(i, 1);
 
-				this.addChildComments(arrCopy, item);
+				if(arr.length > 0) {
+					this.addChildComments(arr, el);
+				}
+			} else {
+				i++;
 			}
-		});
+		}
 	}
 
 	getComments() {
@@ -246,14 +254,21 @@ export default class BookCard extends JetView {
 		commentsModel.getItems(this.bookId).then((dbData) => {
 			const commentsArr = dbData.json();
 
-			commentsArr.forEach((comment, i) => {
-				const commentItem = this.composeComment(comment);
+			let i = 0;
+			while(i < commentsArr.length) {
+				const comment = commentsArr[i];
+				if (!comment.comment_id) {
+					const commentItem = this.composeComment(comment);
+					this.commentLayout.addView(commentItem, 1);
+					commentsArr.splice(i, 1);
 
-				if(!comment.comment_id) {
-					this.commentLayout.addView(commentItem, i);
-					this.addChildComments(commentsArr, comment);
-				}			
-			});
+					if(commentsArr.length > 0) {
+						this.addChildComments(commentsArr, comment);
+					}
+				} else {
+					i++;
+				}
+			}
 		});
 	}
 
@@ -279,9 +294,11 @@ export default class BookCard extends JetView {
 		return {
 			id: `comment_${comment.id}`,
 			css: 'comment_item',
+			padding: {left: 10},
 			rows: [
 				{
 					autoheight: true,
+					borderless: true,
 					template:  `<div class="comment_info">\
 									<div class = "comment_author">${commentAuthor}</div>\
 									<div class = "comment_date">${commentDate}</div>\
@@ -292,7 +309,6 @@ export default class BookCard extends JetView {
 			
 		};
 	}
-
 
 	clearForm (){
 		this.form.clear();
