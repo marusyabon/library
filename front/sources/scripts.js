@@ -36,11 +36,13 @@ const formatDate = (dbDate) => {
 	const currentMonth = new Date().getMonth();
 	const currentDay = new Date().getDate();
 	const currentHours = new Date().getHours();
+	const currentDateTime = new Date();
 
 	const commentsYear = new Date(dbDate).getFullYear();
 	const commentsMonth = new Date(dbDate).getMonth();
 	const commentsDay = new Date(dbDate).getDate();
 	const commentsHours = new Date(dbDate).getHours();
+	const commentsDateTime = new Date(dbDate);
 
 	let formatDate = webix.Date.strToDate("%i:%s");
 
@@ -55,6 +57,10 @@ const formatDate = (dbDate) => {
 	}
 	else if (currentHours > commentsHours){
 		formatDate = webix.Date.dateToStr("%H:%i");
+	}
+	else {
+		const time = (currentDateTime - commentsDateTime)/60000;
+		return `${Math.round(time)} minute(s) ago`;
 	}
 	
 	return formatDate(new Date(dbDate));

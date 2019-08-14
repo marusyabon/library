@@ -102,6 +102,36 @@ export default class BookCard extends JetView {
 			}
 		};
 
+		const addComment = {
+			margin: 5,
+			paddingY: 10,
+			paddingX: 17,
+			rows: [
+				{
+					view:'textarea',
+					localId: 'userComment',
+					label: 'Comment',
+					labelPosition: 'top',
+					height: 80
+				},
+				{
+					cols: [
+						{},
+						{
+							view: 'button',
+							localId: 'saveCommentBtn',
+							type: 'form',
+							label: 'Send',
+							width: 80,
+							click: () => {
+								this.saveComment();
+							}
+						}
+					]
+				}
+			]
+		};
+
 		const comments = {
 			rows: [
 				{
@@ -135,6 +165,7 @@ export default class BookCard extends JetView {
 								orderBook, downloadBook, {}, likeBook
 							]
 						},
+						addComment,
 						comments
 					] 
 				}
@@ -230,14 +261,33 @@ export default class BookCard extends JetView {
 		this.likeButton.refresh();
 	}
 
+	saveComment() {
+		const commentInput = this.$$('userComment');
+		const commentText = commentInput.getValue();
+		const comment = {
+			'user_id': this.userId,
+			'book_id': this.bookId,
+			'content': commentText,
+			'commentDate': new Date()
+		};
+
+		commentsModel.addItem(comment).then((response) => {
+			if(response) {
+				this.clearForm();
+				this.getComments();
+				this.commentLayout.refresh();
+				this.commentLayout.show();
+			}
+		});
+	}
+
 	addChildComments(arr, item) {
 		let i = 0;
-		debugger
 		while(i < arr.length) {
 			const el = arr[i];
 			if (el.comment_id === item.id) {
 				const commentItem = this.composeComment(el);
-				$$(`comment_${item.id}`).addView(commentItem, 1);
+				$$(`comment_${item.id}`).addView(commentItem);
 				arr.splice(i, 1);
 
 				if(arr.length > 0) {
@@ -259,7 +309,7 @@ export default class BookCard extends JetView {
 				const comment = commentsArr[i];
 				if (!comment.comment_id) {
 					const commentItem = this.composeComment(comment);
-					this.commentLayout.addView(commentItem, 1);
+					this.commentLayout.addView(commentItem);
 					commentsArr.splice(i, 1);
 
 					if(commentsArr.length > 0) {
@@ -315,6 +365,7 @@ export default class BookCard extends JetView {
 		this.filesList.clearAll();
 		this.$$('availableTextFiles').clearAll();
 		this.$$('availableAudioFiles').clearAll();
+		this.$$('userComment').setValue('');
 
 		const comments = this.commentLayout.getChildViews();
 
