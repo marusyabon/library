@@ -353,11 +353,18 @@ export default class BookCard extends JetView {
 									<div class = "comment_author">${commentAuthor}</div>\
 									<div class = "comment_date">${commentDate}</div>\
 								</div>
-								<div>${comment.content}</div>`
+								<div>${comment.content}</div>`,
+					on: {
+						onFocus: (view) => this.replyToComment(view)
+					}
 				}
 			]
 			
 		};
+	}
+
+	replyToComment(view) {
+		console.log(view);
 	}
 
 	clearForm (){
