@@ -16,13 +16,15 @@ export default class Comment {
 			'book_id': this.bookId,
 			'content': commentText,
 			'commentDate': new Date(),
-			'comment_id': parentCommentId || null
+			'comment_id': parentCommentId || 0
 		};
 
 		commentsModel.addItem(comment).then((response) => {
 			if (response) {
 				this.clearComments();
-				commentInput.setValue('');
+				if(!parentCommentId) {
+					commentInput.setValue('');
+				}
 				this.getComments();
 				this.commentLayout.show();
 			}
@@ -155,4 +157,4 @@ export default class Comment {
 			});
 		}
 	}
-};
+}

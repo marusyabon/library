@@ -22,11 +22,12 @@ router.get('/:id', function (req, res, next) {
 
 router.post('/', (req, res) => {
 	const comment = req.body;
-	const query = mysql.format('INSERT INTO `comments` (`user_id`, `book_id`, `content`, `comment_date`) VALUES (?,?,?,?)', [
+	const query = mysql.format('INSERT INTO `comments` (`user_id`, `book_id`, `content`, `comment_date`, `comment_id`) VALUES (?,?,?,?,?)', [
 		comment.user_id,
 		comment.book_id,
 		comment.content,
-		comment.commentDate
+		comment.commentDate,
+		comment.comment_id
 	]);
 
 	connection.query(query,

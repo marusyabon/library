@@ -15,6 +15,7 @@ import likesRouter from './routes/likes';
 import filesRouter from './routes/files';
 import audioRouter from './routes/audio';
 import commentsRouter from './routes/comments';
+import ordersRouter from './routes/orders';
 import fileUpload from 'express-fileupload';
 import './config/passport';
 
@@ -39,6 +40,7 @@ app.use('/likes', likesRouter);
 app.use('/files', filesRouter);
 app.use('/audio', audioRouter);
 app.use('/comments', commentsRouter);
+app.use('/orders', ordersRouter);
 
 app.use(function (err, req, res, next) {
 	if (!err.statusCode) err.statusCode = 500;
