@@ -3,7 +3,7 @@ import likesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
 import {DUMMYCOVER, SUCCESS} from '../../consts'; 
 import filesModel from '../../models/files';
-import Comment from './commentObj';
+import CommentClass from './commentObj';
 
 export default class BookCard extends JetView {
 	config() {
@@ -98,7 +98,7 @@ export default class BookCard extends JetView {
 			label: 'Comments <i class="fas fa-angle-down">',
 			width: 120,
 			click: () => { 
-				Comment.toggleComments(this.commentLayout, this.commentsGot, this.$$('commentButton'));
+				this.Comment.toggleComments(this.commentsGot, this.$$('commentButton'));
 			}
 		};
 
@@ -124,7 +124,7 @@ export default class BookCard extends JetView {
 							label: 'Send',
 							width: 80,
 							click: () => {
-								Comment.saveComment(this.$$('userComment')).bind(this);
+								this.Comment.saveComment(this.$$('userComment'));
 							}
 						}
 					]
@@ -182,13 +182,14 @@ export default class BookCard extends JetView {
 		this.book = book;
 		this.bookId = book.id;
 		this.userId = this.getParam("id", true);
+		this.Comment = new CommentClass(this.userId, this.bookId, this.commentLayout);
 		
 		this.clearForm();
 		this.form.setValues(book);
 		this.$$('bookCover').setValues(book.cover_photo || DUMMYCOVER);
 		this.likeButton.define('badge', book.count_likes || '0');
 		this.getFiles();
-		Comment.getComments(this.bookId, this.commentLayout);	
+		this.Comment.getComments();	
 		this.commentsGot = true;	
 		
 		toggleElement(book.book_file, this.$$('downloadBook'));
@@ -267,7 +268,6 @@ export default class BookCard extends JetView {
 		this.filesList.clearAll();
 		this.$$('availableTextFiles').clearAll();
 		this.$$('availableAudioFiles').clearAll();
-		this.$$('userComment').setValue('');
-		Comment.clearComments(this.commentLayout);
+		this.Comment.clearComments();
 	}
 }

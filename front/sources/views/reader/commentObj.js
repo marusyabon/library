@@ -2,7 +2,13 @@
 import {formatDate} from '../../scripts'; 
 import commentsModel from '../../models/comments';
 
-export class Comment {
+export default class Comment {
+	constructor(userId, bookId, commentLayout) {
+		this.userId = userId;
+		this.bookId = bookId;
+		this.commentLayout = commentLayout;
+	}
+
 	saveComment (commentInput, parentCommentId) {
 		const commentText = commentInput.getValue();
 		const comment = {
@@ -16,8 +22,8 @@ export class Comment {
 		commentsModel.addItem(comment).then((response) => {
 			if (response) {
 				this.clearComments();
+				commentInput.setValue('');
 				this.getComments();
-				this.commentLayout.refresh();
 				this.commentLayout.show();
 			}
 		});
@@ -41,8 +47,8 @@ export class Comment {
 		}
 	}
 
-	getComments(bookId, commentLayout) {
-		commentsModel.getItems(bookId).then((dbData) => {
+	getComments() {
+		commentsModel.getItems(this.bookId).then((dbData) => {
 			const commentsArr = dbData.json();
 
 			let i = 0;
@@ -51,7 +57,7 @@ export class Comment {
 				const comment = commentsArr[i];
 				if (!comment.comment_id) {
 					const commentItem = this.composeComment(comment);
-					commentLayout.addView(commentItem);
+					this.commentLayout.addView(commentItem);
 					commentsArr.splice(i, 1);
 
 					if (commentsArr.length > 0) {
@@ -64,18 +70,18 @@ export class Comment {
 		});
 	}
 
-	toggleComments (commentLayout, IsCommentsGot, toggleCommentsBtn) {
-		const isVisible = commentLayout.isVisible();
+	toggleComments (isCommentsGot, toggleCommentsBtn) {
+		const isVisible = this.commentLayout.isVisible();
 		if (isVisible) {
 			toggleCommentsBtn.setValue('Comments <i class="fas fa-angle-down"></i>');
-			commentLayout.hide();
+			this.commentLayout.hide();
 		}
 		else {
 			toggleCommentsBtn.setValue('Comments <i class="fas fa-angle-up"></i>');
-			if (!IsCommentsGot) {
+			if (!isCommentsGot) {
 				this.getComments();
 			}
-			commentLayout.show();
+			this.commentLayout.show();
 		}
 	}
 
@@ -139,17 +145,14 @@ export class Comment {
 		}
 	}
 
-	clearComments (commentLayout) {
-		const comments = commentLayout.getChildViews();
-
+	clearComments () {
+		const comments = this.commentLayout.getChildViews();
 		if (comments) {
 			const commentsCopy = [...comments];
 
 			commentsCopy.forEach((comment) => {
-				commentLayout.removeView(comment);
+				this.commentLayout.removeView(comment);
 			});
 		}
 	}
 };
-
-export default new Comment();
