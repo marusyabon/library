@@ -347,15 +347,17 @@ export default class BookCard extends JetView {
 			padding: {left: 10},
 			rows: [
 				{
+					view: "template",
 					autoheight: true,
 					borderless: true,
+					css: 'template',
 					template:  `<div class="comment_info">\
 									<div class = "comment_author">${commentAuthor}</div>\
 									<div class = "comment_date">${commentDate}</div>\
 								</div>
 								<div>${comment.content}</div>`,
-					on: {
-						onFocus: (view) => this.replyToComment(view)
+					onClick: {
+						'template': () => this.replyToComment(comment.id)
 					}
 				}
 			]
@@ -363,8 +365,9 @@ export default class BookCard extends JetView {
 		};
 	}
 
-	replyToComment(view) {
-		console.log(view);
+	replyToComment(commentId) {
+		
+		console.log(commentId);
 	}
 
 	clearForm (){
