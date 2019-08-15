@@ -1,9 +1,9 @@
 import { JetView } from 'webix-jet';
 import likesModel from '../../models/likes';
-import {toggleElement, formatDate} from '../../scripts'; 
+import {toggleElement} from '../../scripts'; 
 import {DUMMYCOVER, SUCCESS} from '../../consts'; 
 import filesModel from '../../models/files';
-import commentsModel from '../../models/comments';
+import Comment from './commentObj';
 
 export default class BookCard extends JetView {
 	config() {
@@ -98,7 +98,7 @@ export default class BookCard extends JetView {
 			label: 'Comments <i class="fas fa-angle-down">',
 			width: 120,
 			click: () => { 
-				this.toggleComments();
+				Comment.toggleComments(this.commentLayout, this.commentsGot, this.$$('commentButton'));
 			}
 		};
 
@@ -124,7 +124,7 @@ export default class BookCard extends JetView {
 							label: 'Send',
 							width: 80,
 							click: () => {
-								this.saveComment();
+								Comment.saveComment(this.$$('userComment')).bind(this);
 							}
 						}
 					]
@@ -188,7 +188,8 @@ export default class BookCard extends JetView {
 		this.$$('bookCover').setValues(book.cover_photo || DUMMYCOVER);
 		this.likeButton.define('badge', book.count_likes || '0');
 		this.getFiles();
-		this.getComments();		
+		Comment.getComments(this.bookId, this.commentLayout);	
+		this.commentsGot = true;	
 		
 		toggleElement(book.book_file, this.$$('downloadBook'));
 		toggleElement(book.available_copies, this.$$('orderBook'));
@@ -261,130 +262,12 @@ export default class BookCard extends JetView {
 		this.likeButton.refresh();
 	}
 
-	saveComment() {
-		const commentInput = this.$$('userComment');
-		const commentText = commentInput.getValue();
-		const comment = {
-			'user_id': this.userId,
-			'book_id': this.bookId,
-			'content': commentText,
-			'commentDate': new Date()
-		};
-
-		commentsModel.addItem(comment).then((response) => {
-			if(response) {
-				this.clearForm();
-				this.getComments();
-				this.commentLayout.refresh();
-				this.commentLayout.show();
-			}
-		});
-	}
-
-	addChildComments(arr, item) {
-		let i = 0;
-		while(i < arr.length) {
-			const el = arr[i];
-			if (el.comment_id === item.id) {
-				const commentItem = this.composeComment(el);
-				$$(`comment_${item.id}`).addView(commentItem);
-				arr.splice(i, 1);
-
-				if(arr.length > 0) {
-					this.addChildComments(arr, el);
-				}
-			} else {
-				i++;
-			}
-		}
-	}
-
-	getComments() {
-		this.commentsGot = true;
-		commentsModel.getItems(this.bookId).then((dbData) => {
-			const commentsArr = dbData.json();
-
-			let i = 0;
-			while(i < commentsArr.length) {
-				const comment = commentsArr[i];
-				if (!comment.comment_id) {
-					const commentItem = this.composeComment(comment);
-					this.commentLayout.addView(commentItem);
-					commentsArr.splice(i, 1);
-
-					if(commentsArr.length > 0) {
-						this.addChildComments(commentsArr, comment);
-					}
-				} else {
-					i++;
-				}
-			}
-		});
-	}
-
-	toggleComments() {
-		const isVisible = this.commentLayout.isVisible();
-		if(isVisible) {
-			this.toggleCommentsBtn.setValue('Comments <i class="fas fa-angle-down"></i>');
-			this.commentLayout.hide();
-		}
-		else {
-			this.toggleCommentsBtn.setValue('Comments <i class="fas fa-angle-up"></i>');
-			if(!this.commentsGot) {
-				this.getComments();
-			}
-			this.commentLayout.show();
-		}
-	}
-
-	composeComment(comment) {
-		const commentDate = formatDate(comment.comment_date);
-		const commentAuthor = `${comment.user_name} ${comment.user_surname}`;
-
-		return {
-			id: `comment_${comment.id}`,
-			css: 'comment_item',
-			padding: {left: 10},
-			rows: [
-				{
-					view: "template",
-					autoheight: true,
-					borderless: true,
-					css: 'template',
-					template:  `<div class="comment_info">\
-									<div class = "comment_author">${commentAuthor}</div>\
-									<div class = "comment_date">${commentDate}</div>\
-								</div>
-								<div>${comment.content}</div>`,
-					onClick: {
-						'template': () => this.replyToComment(comment.id)
-					}
-				}
-			]
-			
-		};
-	}
-
-	replyToComment(commentId) {
-		
-		console.log(commentId);
-	}
-
-	clearForm (){
+	clearForm() {
 		this.form.clear();
 		this.filesList.clearAll();
 		this.$$('availableTextFiles').clearAll();
 		this.$$('availableAudioFiles').clearAll();
 		this.$$('userComment').setValue('');
-
-		const comments = this.commentLayout.getChildViews();
-
-		if(comments) {
-			const commentsCopy = [...comments];
-
-			commentsCopy.forEach((comment) => {
-				this.commentLayout.removeView(comment);
-			});			
-		}
+		Comment.clearComments(this.commentLayout);
 	}
 }
