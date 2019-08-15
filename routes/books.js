@@ -5,9 +5,9 @@ import mysql from 'mysql2';
 const router = Router();
 
 router.get('/', function (req, res) {
-	const user_id = req.query.user_id;
+	const userId = req.query.user_id;
 
-	connection.query('SELECT *, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ?', [user_id],
+	connection.query('SELECT *, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ?', [userId],
 		function (err, results) {
 			if(!err) {
 				res.status(200).send(results);
@@ -74,8 +74,8 @@ router.put('/', function (req, res, next) {
 });
 
 router.delete('/', function (req, res) {
-	const book_id = req.body.row;
-	const query = mysql.format("DELETE FROM `books` WHERE `id` = ?", [book_id]);
+	const bookId = req.body.row;
+	const query = mysql.format("DELETE FROM `books` WHERE `id` = ?", [bookId]);
 
 	connection.query(
 		query,
