@@ -9,8 +9,8 @@ class OrdersModel {
 		return webix.ajax().get(`${this._url}${id}`);	
 	}
 
-	addItem(data) {
-		return webix.ajax().post(this._url, data);
+	addOrder(order) {
+		return webix.ajax().post(this._url, order);
 	}
 
 	updateItem(data) {

@@ -4,7 +4,21 @@ import mysql from 'mysql2';
 
 const router = Router();
 
-/* GET users listing. */
+router.get('/:book_id', (req, res) => {
+	const bookId = req.params.book_id;
+
+	connection.query('SELECT * FROM `likes` WHERE `book_id` = ?', [bookId],
+		function (err, results) {
+			if(!err) {
+				res.send(results);
+			}
+			else {
+				res.status(500);
+			}
+		}
+	);	
+});
+
 router.post('/', function (req, res) {
 	const book_id = req.body.bookId;
 	const user_id = req.body.userId;

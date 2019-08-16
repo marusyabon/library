@@ -22,6 +22,7 @@ router.get('/:id', function (req, res, next) {
 
 router.post('/', (req, res) => {
 	const order = req.body;
+
 	const query = mysql.format('INSERT INTO `orders` (`user_id`, `book_id`, `order_date`) VALUES (?,?,?)', [
 		order.user_id,
 		order.book_id,

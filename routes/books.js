@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', function (req, res) {
 	const userId = req.query.user_id;
 
-	connection.query('SELECT *, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ?', [userId],
+	connection.query('SELECT books.*, (SELECT count(*) FROM likes where likes.book_id = books.id) count_likes, likes.user_id, orders.order_date FROM books LEFT OUTER JOIN likes ON books.id = likes.book_id and likes.user_id = ? LEFT OUTER JOIN orders ON books.id = orders.book_id and orders.user_id = ?', [userId, userId],
 		function (err, results) {
 			if(!err) {
 				res.status(200).send(results);
@@ -87,7 +87,6 @@ router.delete('/', function (req, res) {
 				console.log(err);
 				res.status(500).send(err);
 			}
-			
 		}
 	);
 });

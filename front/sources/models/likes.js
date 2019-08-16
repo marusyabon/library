@@ -6,8 +6,8 @@ class LikesModel {
 		this._url = `${URL}/likes/`;
 	}
 
-	getDataFromServer() {
-		return webix.ajax().get(this._url);
+	getLikes(id) {
+		return webix.ajax().get(`${this._url}${id}`);
 	}
 
 	addLike(userId, bookId) {

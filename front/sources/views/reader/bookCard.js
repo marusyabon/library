@@ -3,6 +3,7 @@ import likesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
 import {DUMMYCOVER, SUCCESS} from '../../consts'; 
 import filesModel from '../../models/files';
+import ordersModel from '../../models/orders';
 import CommentClass from './commentObj';
 
 export default class BookCard extends JetView {
@@ -178,6 +179,7 @@ export default class BookCard extends JetView {
 		this.form = this.$$('bookCardReader');
 		this.filesList = this.$$('availableTextFiles');
 		this.toggleCommentsBtn = this.$$('commentButton');
+		this.orderBtn = this.$$('orderBook');
 		this.commentLayout = this.$$('commentLayout');
 		this.book = book;
 		this.bookId = book.id;
@@ -195,6 +197,7 @@ export default class BookCard extends JetView {
 		toggleElement(book.book_file, this.$$('downloadBook'));
 		toggleElement(book.available_copies, this.$$('orderBook'));
 		this.toggleLike(book.user_id == this.userId);
+		this.toggleOrder(book.order_date);
 
 		this.getRoot().show();
 	}
@@ -222,7 +225,39 @@ export default class BookCard extends JetView {
 	}
 
 	orderBook() {
-		
+		const order = {
+			user_id: this.userId,
+			book_id: this.bookId,
+			order_date: new Date()
+		};
+
+		ordersModel.addOrder(order).then((response) => {
+			const status = response.json().serverStatus;
+			if(status == SUCCESS) {
+				this.setOrderedVal();
+			}
+		});
+	}
+
+	setOrderedVal() {
+		this.orderBtn.define('label', 'Ordered'); 
+		this.orderBtn.refresh();
+		this.orderBtn.disable();
+	}
+
+	unsetOrderedVal() {
+		this.orderBtn.define('label', '<i class="far fa-hand-paper"></i> Order');  
+		this.orderBtn.refresh();
+		this.orderBtn.enable();
+	}
+
+	toggleOrder(ordered) {
+		if(ordered) {
+			this.setOrderedVal();
+		}
+		else {
+			this.unsetOrderedVal();
+		}
 	}
 
 	likeBook() {
@@ -241,7 +276,7 @@ export default class BookCard extends JetView {
 					this.setLike();
 				}
 			});
-		}		
+		}	
 	}	
 
 	toggleLike(condition) {
