@@ -8,6 +8,10 @@ class UsersModel {
 	getDataFromServer() {
 		return webix.ajax().get(this._url);
 	}
+
+	getReaders() {
+		return webix.ajax().get(`${this._url}/readers`);
+	}
 	
 	getItem(id) {
 		return webix.ajax().get(`${this._url}${id}`);	

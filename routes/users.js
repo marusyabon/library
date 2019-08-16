@@ -15,6 +15,18 @@ router.get('/', function (req, res, next) {
 	);
 });
 
+router.get('/readers', function (req, res, next) {
+	const query = mysql.format('SELECT id, user_name, user_surname FROM `users` WHERE `capabilities_id` = 1');
+
+	connection.query(query,
+		function (err, results) {
+			if (!err) {
+				res.send(results);
+			}
+		}
+	);
+});
+
 router.get('/:id', function (req, res, next) {
 	const id = req.params.id;
 	const query = mysql.format('SELECT * FROM `users` WHERE `id` = ?', [id]);
