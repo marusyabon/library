@@ -52,18 +52,21 @@ export default class MainView extends JetView{
 	}
 
 	init() {
-		const userId = this.getParam("id", true);
 		this.grid = this.$$('ordersList');
+		this.userId = this.getParam("id", true);
+		this.parseBooks();		
+	}
 
-		ordersModel.getItems(userId).then((dbData) => {
+	async parseBooks() {
+		await ordersModel.getItems(this.userId).then((dbData) => {
 			let ordersArr = dbData.json();
+			this.grid.clearAll();
 			this.$$('ordersList').parse(ordersArr);
 		});
 	}
 
-	removeBook(id) {
-		ordersModel.removeItem(id);
-		return this.grid.remove(id);
+	async removeBook(id) {
+		await ordersModel.removeItem(id);
+		await this.parseBooks();
 	}
-
 }
