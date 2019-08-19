@@ -2,7 +2,6 @@ import { JetView } from 'webix-jet';
 import usersModel from '../../models/users';
 import OrdersForm from './ordersForm';
 
-
 export default class UsersView extends JetView {
 	config() {
 		const dtable = {
@@ -15,7 +14,7 @@ export default class UsersView extends JetView {
 				},
 				{
 					id: 'full_name',
-					header: 'Name',
+					header: ['Name', {content: 'textFilter'}],
 					minWidth: 180,
 					fillspace: 1.5
 				},				
@@ -56,6 +55,8 @@ export default class UsersView extends JetView {
 	}
 
 	showUserOrders(id) {
-		this.editOrders.showWindow(id);
+		const selectedItem = $$('usersListLibrarian').getItem(id);
+		const userName = `${selectedItem.user_name} ${selectedItem.user_surname}`;
+		this.editOrders.showPopup(id, userName);
 	}
 }

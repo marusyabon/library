@@ -269,7 +269,7 @@ export default class BookCard extends JetView {
 				}
 			});
 		}
-		else{
+		else {
 			likesModel.addLike(this.userId, this.bookId).then((response) => {
 				const status = response.json().serverStatus;
 				if(status == SUCCESS) {

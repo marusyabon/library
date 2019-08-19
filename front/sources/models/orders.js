@@ -9,14 +9,18 @@ class OrdersModel {
 		return webix.ajax().get(`${this._url}${id}`);	
 	}
 
+	getIdList(id) {
+		return webix.ajax().get(`${this._url}${id}/ids`);	
+	}
+
 	addOrder(order) {
 		return webix.ajax().post(this._url, order);
 	}
 
-	updateItem(data) {
-		return webix.ajax().put(this._url, data);
+	updateUserOrders(ordersArr, userId) {
+		webix.ajax().put(this._url, {orders: ordersArr, user_id: userId});
 	}
-	
+
 	removeItem(id) {
 		return webix.ajax().del(this._url, id);
 	}
