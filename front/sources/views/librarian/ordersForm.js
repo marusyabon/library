@@ -87,5 +87,6 @@ export default class OrdersForm extends JetView {
 	saveForm() {
 		const ordersListValue = this.ordersList.getValue();
 		ordersModel.updateUserOrders(ordersListValue, this.userId);
+		this.$$('userOrdersWindow').hide();
 	}
 }

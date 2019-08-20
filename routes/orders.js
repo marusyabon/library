@@ -22,7 +22,7 @@ router.get('/:id', function (req, res, next) {
 
 router.get('/:id/ids', function (req, res, next) {
 	const id = req.params.id;
-	const query = mysql.format('SELECT orders.book_id AS id FROM orders WHERE orders.user_id = ?', [id]);
+	const query = mysql.format('SELECT book_id AS id FROM orders WHERE user_id = ? AND return_date IS NULL', [id]);
 
 	connection.query(query,
 		function (err, results) {
@@ -60,21 +60,48 @@ router.post('/', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-	const user_id = req.body.user_id;
+	const userId = req.body.user_id;
 	const ordersIds = req.body.orders;
 	const orders = ordersIds.split(',');
-	console.log(ordersIds)
+	const dateNow = new Date();
 
-	const findAllOrders = mysql.format('SELECT * FROM orders WHERE user_id = ?', [user_id]); 
+	const findAllOrders = mysql.format('SELECT * FROM orders WHERE user_id = ?', [userId]); 
 
 	connection.query(findAllOrders, function (err, results) {
 		if (!err) {
+			const response = {};
 			orders.forEach((bookId) => {
-				const matchedBooks = results.filter((dbRecord) => {
-					return dbRecord.book_id == bookId;
+				const orderExists = results.find((dbRecord) => {
+					return dbRecord.book_id === +bookId;
 				});
-				console.log(matchedBooks);
-			});			
+
+				const orderOpened =  results.find((dbRecord) => {
+					return dbRecord.book_id === +bookId && !dbRecord.return_date;
+				});
+
+				if(!orderExists || orderExists && !orderOpened) {
+					const addNewOrder = mysql.format('INSERT INTO `orders` (`user_id`, `book_id`, `order_date`) VALUES (?,?,?)', [userId, bookId, dateNow]);
+					connection.query(addNewOrder, function(err, res) {
+						if(err) {
+							response.status = 'error';
+						}
+					});
+				}
+			});	
+
+			results.forEach((dbRecord) => {
+				const match = orders.find(id => dbRecord.book_id == id);
+				if(!match) {
+					const closeOrder = mysql.format('UPDATE `orders` SET `return_date` = ? WHERE id = ?', [dateNow, dbRecord.id]);
+					connection.query(closeOrder, function(err, res) {
+						if(err) {
+							response.status = 'error';
+						}
+					});
+				}
+			});
+
+			res.send(results);		
 		}
 		else {
 			console.log(err);
