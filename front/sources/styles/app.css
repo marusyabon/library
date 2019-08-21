@@ -92,3 +92,10 @@
 .list_button {
     float: right;
 }
+
+.comment_info {
+    display: flex;
+    justify-content: space-between;
+    font-style: italic;
+    padding-bottom: 5px;
+}

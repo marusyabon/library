@@ -1,11 +1,13 @@
+import { URL } from '../consts';
+
 class LikesModel {
 	constructor() {
 		this._data = [];
-		this._url = 'http://localhost:3000/likes/';
+		this._url = `${URL}/likes/`;
 	}
 
-	getDataFromServer() {
-		return webix.ajax().get(this._url);
+	getLikes(id) {
+		return webix.ajax().get(`${this._url}${id}`);
 	}
 
 	addLike(userId, bookId) {

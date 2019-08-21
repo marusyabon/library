@@ -1,8 +1,10 @@
 import { JetView } from 'webix-jet';
 import likesModel from '../../models/likes';
 import {toggleElement} from '../../scripts'; 
-import {dummyCover, SUCCESS} from '../../consts'; 
+import {DUMMYCOVER, SUCCESS} from '../../consts'; 
 import filesModel from '../../models/files';
+import ordersModel from '../../models/orders';
+import CommentClass from './commentObj';
 
 export default class BookCard extends JetView {
 	config() {
@@ -90,21 +92,84 @@ export default class BookCard extends JetView {
 			}
 		};
 
+		const toggleCommentsBtn = {
+			view: 'button',
+			localId: 'commentButton',
+			type: 'htmlbutton',
+			label: 'Comments <i class="fas fa-angle-down">',
+			width: 120,
+			click: () => { 
+				this.Comment.toggleComments(this.commentsGot, this.$$('commentButton'));
+			}
+		};
+
+		const addComment = {
+			margin: 5,
+			paddingY: 10,
+			paddingX: 17,
+			rows: [
+				{
+					view:'textarea',
+					localId: 'userComment',
+					label: 'Comment',
+					labelPosition: 'top',
+					height: 80
+				},
+				{
+					cols: [
+						{},
+						{
+							view: 'button',
+							localId: 'saveCommentBtn',
+							type: 'form',
+							label: 'Send',
+							width: 80,
+							click: () => {
+								this.Comment.saveComment(this.$$('userComment'));
+							}
+						}
+					]
+				}
+			]
+		};
+
+		const comments = {
+			rows: [
+				{
+					paddingY: 10,
+					cols: [
+						{}, toggleCommentsBtn, {}
+					]
+				},
+				{
+					localId: 'commentLayout',
+					hidden: true,
+					rows: []
+				}
+			]
+		};
+
 		return {
 			view: 'popup',
 			position:'center',
+			maxHeight: 550,
 			body:{
-				rows: [
-					bookCover, bookCard, availableTextFiles, availableAudioFiles,
-					{
-						paddingY: 10,
-						paddingX: 15,
-						margin: 10,
-						cols: [
-							orderBook, downloadBook, {}, likeBook
-						]
-					}
-				] 
+				view: 'scrollview',
+				body: {
+					rows: [
+						bookCover, bookCard, availableTextFiles, availableAudioFiles,
+						{
+							paddingY: 10,
+							paddingX: 15,
+							margin: 10,
+							cols: [
+								orderBook, downloadBook, {}, likeBook
+							]
+						},
+						addComment,
+						comments
+					] 
+				}
 			}
 		};
 	}
@@ -113,15 +178,31 @@ export default class BookCard extends JetView {
 		this.likeButton = this.$$('likeButton');
 		this.form = this.$$('bookCardReader');
 		this.filesList = this.$$('availableTextFiles');
+		this.toggleCommentsBtn = this.$$('commentButton');
+		this.orderBtn = this.$$('orderBook');
+		this.commentLayout = this.$$('commentLayout');
 		this.book = book;
 		this.bookId = book.id;
 		this.userId = this.getParam("id", true);
+		this.Comment = new CommentClass(this.userId, this.bookId, this.commentLayout);
 		
 		this.clearForm();
 		this.form.setValues(book);
-		this.$$('bookCover').setValues(book.cover_photo || dummyCover);
+		this.$$('bookCover').setValues(book.cover_photo || DUMMYCOVER);
 		this.likeButton.define('badge', book.count_likes || '0');
+		this.getFiles();
+		this.Comment.getComments();	
+		this.commentsGot = true;	
+		
+		toggleElement(book.book_file, this.$$('downloadBook'));
+		toggleElement(book.available_copies, this.$$('orderBook'));
+		this.toggleLike(book.user_id == this.userId);
+		this.toggleOrder(book.order_date);
 
+		this.getRoot().show();
+	}
+
+	getFiles() {
 		filesModel.getItems(this.bookId).then((dbData) => {
 			const filesArr = dbData.json();
 
@@ -130,24 +211,53 @@ export default class BookCard extends JetView {
 
 			filesArr.forEach((file) => {
 				switch(file.data_type) {
-					case 'text': textFiles.push(file);
+					case 'text': 
+						textFiles.push(file);
 						break;
-					case 'audio': audioFiles.push(file);
+					case 'audio': 
+						audioFiles.push(file);
 						break;
 				}
 			});
 			this.$$('availableTextFiles').parse(textFiles);
 			this.$$('availableAudioFiles').parse(audioFiles);
 		});
-		toggleElement(book.book_file, this.$$('downloadBook'));
-		toggleElement(book.available_copies, this.$$('orderBook'));
-		this.toggleLike(book.user_id == this.userId);
-
-		this.getRoot().show();
 	}
 
 	orderBook() {
-		
+		const order = {
+			user_id: this.userId,
+			book_id: this.bookId,
+			order_date: new Date()
+		};
+
+		ordersModel.addOrder(order).then((response) => {
+			const status = response.json().serverStatus;
+			if(status == SUCCESS) {
+				this.setOrderedVal();
+			}
+		});
+	}
+
+	setOrderedVal() {
+		this.orderBtn.define('label', 'Ordered'); 
+		this.orderBtn.refresh();
+		this.orderBtn.disable();
+	}
+
+	unsetOrderedVal() {
+		this.orderBtn.define('label', '<i class="far fa-hand-paper"></i> Order');  
+		this.orderBtn.refresh();
+		this.orderBtn.enable();
+	}
+
+	toggleOrder(ordered) {
+		if(ordered) {
+			this.setOrderedVal();
+		}
+		else {
+			this.unsetOrderedVal();
+		}
 	}
 
 	likeBook() {
@@ -159,14 +269,14 @@ export default class BookCard extends JetView {
 				}
 			});
 		}
-		else{
+		else {
 			likesModel.addLike(this.userId, this.bookId).then((response) => {
 				const status = response.json().serverStatus;
 				if(status == SUCCESS) {
 					this.setLike();
 				}
 			});
-		}		
+		}	
 	}	
 
 	toggleLike(condition) {
@@ -188,10 +298,11 @@ export default class BookCard extends JetView {
 		this.likeButton.refresh();
 	}
 
-	clearForm (){
+	clearForm() {
 		this.form.clear();
 		this.filesList.clearAll();
 		this.$$('availableTextFiles').clearAll();
 		this.$$('availableAudioFiles').clearAll();
+		this.Comment.clearComments();
 	}
 }

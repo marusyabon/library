@@ -3,8 +3,7 @@ import Library from '../common/library';
 import BookCard from './bookCard';
 
 export default class libLibrary extends JetView {
-	config() {
-		
+	config() {	
 
 		const libraryConfig = {
 			role: 'librarian'
@@ -19,7 +18,9 @@ export default class libLibrary extends JetView {
 				library.addBook();
 			}
 		};
+
 		const library = new Library(this.app, libraryConfig, BookCard);
+		
 		return {
 			rows: [
 				library,

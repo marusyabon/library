@@ -18,9 +18,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:book_id', (req, res) => {
-	const book_id = req.params.book_id;
+	const bookId = req.params.book_id;
 
-	connection.query('SELECT * FROM `files` WHERE `book_id` = ?', [book_id],
+	connection.query('SELECT * FROM `files` WHERE `book_id` = ?', [bookId],
 		function (err, results) {
 			if(!err) {
 				res.send(results);
@@ -48,28 +48,6 @@ router.get('/download/:id', (req, res) => {
 	);	
 });
 
-router.post('/', (req, res) => {
-	const file = req.body;
-
-	const query = mysql.format('INSERT INTO `files` (`name`, `size`, `book_id`) VALUES (?,?,?)', [
-		file.name,
-		file.size,
-		file.book_id,
-	]);
-
-	connection.query(query,
-		(err, results) => {
-			if (!err) {
-				res.send(results);
-			}
-			else {
-				console.log(err);
-				res.status(500);
-			}
-		}
-	);
-});
-
 router.post('/upload/:datatype', (req, res) => {
 	const datatype = req.url.split('/')[2];
 
@@ -84,11 +62,11 @@ router.post('/upload/:datatype', (req, res) => {
 
 	uploadedFile.mv(url, function (err) {
 		if (!err) {
-			const file_size = uploadedFile.size;
-			const file_user_id = req.body.user_id;
-			const file_book_id = req.body.book_id;
+			const fileSize = uploadedFile.size;
+			const fileUserId = req.body.user_id;
+			const fileBookId = req.body.book_id;
 
-			const query = mysql.format("INSERT INTO files (`name`, `size`, `url`, `book_id`, `user_id`, `data_type`) VALUES (?,?,?,?,?,?)", [fileName, file_size, _path, file_book_id, file_user_id, datatype]);
+			const query = mysql.format('INSERT INTO files (`name`, `size`, `url`, `book_id`, `user_id`, `data_type`) VALUES (?,?,?,?,?,?)', [fileName, fileSize, _path, fileUserId, fileBookId, datatype]);
 			connection.query(
 				query,
 				(err) => {
@@ -102,7 +80,6 @@ router.post('/upload/:datatype', (req, res) => {
 
 				}
 			);
-
 		}
 		else {
 			console.log(err);

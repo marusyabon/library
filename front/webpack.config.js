@@ -1,5 +1,7 @@
 var path = require("path");
 var webpack = require("webpack");
+require("babel-core/register");
+require("babel-polyfill");
 
 module.exports = function(env) {
 

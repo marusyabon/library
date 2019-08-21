@@ -33,7 +33,7 @@ if (!BUILD_AS_MODULE){
 				const i = targetPart.indexOf('id');
 				const role = targetPart.split('.')[0];
 				const id = targetPart.slice(i+3);
-
+ 
 				webix.ajax().get('http://localhost:3000/check').then(
 					(res) => {
 						const response = res.json();

@@ -1,27 +1,40 @@
 import { JetView } from 'webix-jet';
+import ordersModel from '../../models/orders';
 
 export default class MainView extends JetView{
 	config() {
 		const testResults = {
 			view: 'datatable',
-			id: 'groupList',
+			localId: 'ordersList',
 			select: true,
-			columns: [
-							
+			columns: [	
 				{
-					header: 'Add',
-					css: 'center',
-					width: 50,
-					template: '<i class="fas fa-plus"></i>'
+					id: 'id',
+					hidden: true,
+				},				
+				{
+					id: 'book_title',
+					header: 'Book',
+					fillspace: 1
+				},
+				{
+					id: 'author_name',
+					header: 'Author',
+					fillspace: 1
 				},
 				{
 					id: 'removeCol',
 					header: 'Remove',
 					css: 'center',
 					width: 70,
-					template: '{common.trashIcon()}'
+					template: '<i class="fas fa-trash"></i>'
 				}				
-			]
+			],
+			onClick: {
+				'fa-trash': (e, id) => {
+					this.removeBook(id);
+				}
+			}
 		};
 
 		const button = {
@@ -39,6 +52,21 @@ export default class MainView extends JetView{
 	}
 
 	init() {
-		// $$('groupList').parse(groups);
+		this.grid = this.$$('ordersList');
+		this.userId = this.getParam("id", true);
+		this.parseBooks();		
+	}
+
+	async parseBooks() {
+		await ordersModel.getItems(this.userId).then((dbData) => {
+			let ordersArr = dbData.json();
+			this.grid.clearAll();
+			this.$$('ordersList').parse(ordersArr);
+		});
+	}
+
+	async removeBook(id) {
+		await ordersModel.removeItem(id);
+		await this.parseBooks();
 	}
 }

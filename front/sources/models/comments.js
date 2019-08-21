@@ -1,12 +1,8 @@
 import { URL } from '../consts';
 
-class FilesModel {
+class CommentsModel {
 	constructor() {
-		this._url = `${URL}/files/`;
-	}
-
-	getDataFromServer() {
-		return webix.ajax().get(this._url);
+		this._url = `${URL}/comments/`;
 	}
 	
 	getItems(id) {
@@ -20,10 +16,6 @@ class FilesModel {
 	updateItem(data) {
 		return webix.ajax().put(this._url, data);
 	}
-
-	downloadItem(id) {
-		return webix.ajax().response('blob').get(`${this._url}download/${id}`);	
-	}
 }
 
-export default new FilesModel();
+export default new CommentsModel();

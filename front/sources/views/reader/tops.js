@@ -33,7 +33,25 @@ export default class bookTops extends JetView {
 						}
 					],
 					on: {
-						onItemClick: id => this[id]()	
+						onItemClick: (id) => {
+							switch(id) {
+								case 'showOldestBooks':
+									this.showOldestBooks();
+									break;
+								case 'showNewestBooks':
+									this.showNewestBooks();
+									break;
+								case 'showMostPagesBooks':
+									this.showMostPagesBooks();
+									break;
+								case 'showBooksWithLongNames':
+									this.showBooksWithLongNames();
+									break;
+								case 'showAuthorsWithMostBooks':
+									this.showAuthorsWithMostBooks();
+									break;
+							}
+						}
 					}
 				},
 				{
@@ -104,31 +122,25 @@ export default class bookTops extends JetView {
 		data.sort((a, b) => {
 			return a.year_of_publication - b.year_of_publication;
 		});
-		this.showRsults(data, this.defaultConfig);
+		this.showResults(data, this.defaultConfig);
 	}
 
 	showNewestBooks() {
 		let data = [...this.booksArr];
-		data.sort((a, b) => {
-			return b.year_of_publication - a.year_of_publication;
-		});
-		this.showRsults(data, this.defaultConfig);
+		data.sort((a, b) => b.year_of_publication - a.year_of_publication);
+		this.showResults(data, this.defaultConfig);
 	}
 
 	showMostPagesBooks() {
 		let data = [...this.booksArr];
-		data.sort((a, b) => {
-			return b.number_of_pages - a.number_of_pages;
-		});
-		this.showRsults(data, this.defaultConfig);
+		data.sort((a, b) =>  b.number_of_pages - a.number_of_pages);
+		this.showResults(data, this.defaultConfig);
 	}
 
 	showBooksWithLongNames() {
 		let data = [...this.booksArr];
-		data.sort((a, b) => {
-			return b.book_title.length - a.book_title.length;
-		});
-		this.showRsults(data, this.defaultConfig);
+		data.sort((a, b) => b.book_title.length - a.book_title.length);
+		this.showResults(data, this.defaultConfig);
 	}
 
 	showAuthorsWithMostBooks() {
@@ -143,9 +155,8 @@ export default class bookTops extends JetView {
 			}
 		});
 
-		authors = authors.sort((a, b) => {
-			return b.booksCount - a.booksCount;
-		});
+		authors = authors.sort((a, b) => b.booksCount - a.booksCount);
+
 		const columns = [
 			{
 				id: 'name',
@@ -158,10 +169,10 @@ export default class bookTops extends JetView {
 				fillspace: 1
 			}
 		];
-		this.showRsults(authors, columns);
+		this.showResults(authors, columns);
 	}
 
-	showRsults(data, columns) {
+	showResults(data, columns) {
 		this.grid.define('columns', columns);
 		this.grid.refreshColumns();
 		data = data.slice(0, 10);

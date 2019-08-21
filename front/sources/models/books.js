@@ -1,7 +1,9 @@
+import { URL } from '../consts';
+
 class BooksModel {
 	constructor() {
 		this._data = [];
-		this._url = 'http://localhost:3000/books/';
+		this._url = `${URL}/books/`;
 	}
 
 	getDataFromServer(id) {
